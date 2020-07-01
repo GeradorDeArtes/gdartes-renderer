@@ -1,0 +1,47 @@
+.flex-column {
+	display: inline-flex;
+	flex-direction: column;
+}
+
+.flex-row {
+	display: inline-flex;
+	flex-direction: row;
+}
+
+.stretch {
+	align-items: stretch;
+}
+
+.justify-center {
+	justify-content: center;
+}
+
+.justify-end {
+	justify-content: flex-end;
+}
+
+.justify-start {
+	justify-content: flex-start;
+}
+
+.align-center {
+	align-items: center;
+}
+
+.align-end {
+	align-items: flex-end;
+}
+
+.align-start {
+	align-items: flex-start;
+}
+
+.csjs-scale-container {
+	position: relative;
+}
+
+.csjs-scale-content {
+	position: absolute;
+	top: 0; left: 0;
+	transform-origin: top left;
+}
