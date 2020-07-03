@@ -19,7 +19,7 @@ export class Csjs {
 		element.css('transform-origin', horizontal_alignment);
 		element.css('transform', 'scale(' + scale + ')');
 
-		if(element.height() > height ) {
+		if(element.height() * scale > height ) {
 			let fontSize = parseInt(element.css('font-size'));
 			element.css('fontSize', fontSize-1);
 			this.fillSpace(element, width, height, horizontal_alignment);

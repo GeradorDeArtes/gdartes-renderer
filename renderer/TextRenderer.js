@@ -47,7 +47,7 @@ export class TextRenderer {
         setTimeout(() => {
             let csjs = new Csjs();
             csjs.fillSpace(text, container.width(), container.height(), component.horizontal_alignment);
-        });        
+        }, 15);        
     
         return container;
     }
