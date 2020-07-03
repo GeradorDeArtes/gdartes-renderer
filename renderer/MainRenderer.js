@@ -2,8 +2,6 @@ import { ImageRenderer } from "./ImageRenderer.js";
 import { TextRenderer } from "./TextRenderer.js";
 
 export class MainRenderer {
-    frame;
-
     constructor(frame) {
         this.frame = frame;
         frame.empty();

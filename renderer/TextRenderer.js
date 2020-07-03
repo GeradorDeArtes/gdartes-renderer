@@ -5,18 +5,20 @@ export class TextRenderer {
     render = (component, value) => {
         let container = $('<div>');
         container.addClass('csjs-scale-container');
-        container.width(component.size.width);
-        container.height(component.size.height);
-
+        
         container.css({
+            width: component.size.width,
+            height: component.size.height,
             left: component.position.x,
             top: component.position.y,
-            backgroundColor: 'blue'
+            backgroundColor: 'blue',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
         })
 
         let text = $('<div>');
     
-        text.html(value.value);
         text.addClass('text');
         text.addClass('csjs-scale-content');
     
@@ -24,16 +26,24 @@ export class TextRenderer {
             fontFamily: component.font_family,
             fontSize: component.font_size,
             fontWeight: component.weight,
-            color: component.color
+            color: component.color,
+            textAlign: component.horizontal_alignment,
+            position: 'relative'
         });
 
+        let p = $('<p>');
+        p.html(value.value);
+
+        p.css({
+            display: 'inline',
+        });
+
+        text.append(p);
         container.append(text);
 
         setTimeout(() => {
             let csjs = new Csjs();
-            csjs.scale(container, {
-                width: container.width()
-            });
+            csjs.fillSpaceCenter(text, container.width(), container.height());
         });        
     
         return container;

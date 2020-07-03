@@ -58,17 +58,17 @@
                 position: {
                     xAnchor: 'left',
                     yAnchor: 'top',
-                    x: 170,
-                    y: 50,
+                    x: 40,
+                    y: 460,
                 },
                 size: {
-                    width: 200,
+                    width: 520,
                     height: '100px',
                 },
-                vertical_alignment: 'top|center|bottom',
-                horizontal_alignment: 'left|center|right',
+                vertical_alignment: 'center',
+                horizontal_alignment: 'center',
                 font_family: 'Roboto',
-                font_size: '60px',
+                font_size: '25px',
                 weight: 'bold',
                 color: '#ffffff',
                 letter_spacing: '2px'
@@ -78,15 +78,16 @@
 
     let state = {
         '3': {
-            value: 'Um texto'
+            value: 'Um texto feito para quebrasse kkkkkkkkkkkkkkkkkkkkkkkkkkk antes dele poder aumentar?'
         }
     }
 
     function renderTemplate(template) {
         let frame = $('#frame');
-        let renderer = new MainRenderer(frame)
+        let renderer = new MainRenderer(frame);
         renderer.render(template, state);
     }
+
     window.onload = () => {
         renderTemplate(template)
     }
