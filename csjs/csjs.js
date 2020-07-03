@@ -14,17 +14,15 @@ export class Csjs {
 		element.css('height', scale * child.height())
 	}
 
-	fillSpaceCenter = (element, width, height) => {
+	fillSpace = (element, width, height, horizontal_alignment) => {
 		let scale = width / element.children().first().width();
+		element.css('transform-origin', horizontal_alignment);
 		element.css('transform', 'scale(' + scale + ')');
-		element.css('transform-origin', 'center');
-		console.log(element.width());
-		console.log(element.width() * scale);
 
 		if(element.height() > height ) {
 			let fontSize = parseInt(element.css('font-size'));
 			element.css('fontSize', fontSize-1);
-			this.fillSpaceCenter(element, width, height);
+			this.fillSpace(element, width, height, horizontal_alignment);
 		}
 	}
 

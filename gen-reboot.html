@@ -53,7 +53,8 @@
             },
             {
                 id: '3',
-  	            name: 'Camada 3',
+                name: 'Camada 3',
+                input: '1',  
                 type: 'dinamic-text',
                 position: {
                     xAnchor: 'left',
@@ -63,21 +64,51 @@
                 },
                 size: {
                     width: 520,
-                    height: '100px',
+                    height: 100,
                 },
                 vertical_alignment: 'center',
-                horizontal_alignment: 'center',
+                horizontal_alignment: 'left',
                 font_family: 'Roboto',
-                font_size: '25px',
+                font_size: '20px',
                 weight: 'bold',
                 color: '#ffffff',
-                letter_spacing: '2px'
+                letter_spacing: 0
+            },
+            {
+                id: '4',
+                name: 'Camada 4',
+                input: '1',  
+                type: 'dinamic-text',
+                position: {
+                    xAnchor: 'left',
+                    yAnchor: 'top',
+                    x: 40,
+                    y: 350,
+                },
+                size: {
+                    width: 520,
+                    height: 100,
+                },
+                vertical_alignment: 'center',
+                horizontal_alignment: 'left',
+                font_family: 'Roboto',
+                font_size: '15px',
+                weight: 'bold',
+                color: '#ffffff',
+                letter_spacing: 0
             }
         ]
     }
 
+    let input = {
+        '1': {
+            "type": "string",
+            "description": "Chamada"
+        }
+    }
+
     let state = {
-        '3': {
+        '1': {
             value: 'Um texto feito para quebrasse kkkkkkkkkkkkkkkkkkkkkkkkkkk antes dele poder aumentar?'
         }
     }
@@ -85,7 +116,7 @@
     function renderTemplate(template) {
         let frame = $('#frame');
         let renderer = new MainRenderer(frame);
-        renderer.render(template, state);
+        renderer.render(template, input, state);
     }
 
     window.onload = () => {
@@ -94,10 +125,12 @@
 
     $(document).on('keypress',function(e) {
         if(e.which == 44) {
-            template.components[2].size.width -= 10;
+            // template.components[2].size.width -= 10;
+            template.components[2].letter_spacing -= 1;
         }
         if(e.which == 46) {
-            template.components[2].size.width += 10;
+            // template.components[2].size.width += 10;
+            template.components[2].letter_spacing += 1;
         }
         renderTemplate(template)
     });

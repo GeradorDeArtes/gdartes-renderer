@@ -13,8 +13,10 @@ export class TextRenderer {
             top: component.position.y,
             backgroundColor: 'blue',
             display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
+            justifyContent: component.horizontal_alignment,
+            alignItems: this.getAlignItemsByVerticalAlignment(component.vertical_alignment),
+            direction: this.getDirectionFromHorizontalAlignment(component.horizontal_alignment),
+            position: 'absolute'
         })
 
         let text = $('<div>');
@@ -27,6 +29,7 @@ export class TextRenderer {
             fontSize: component.font_size,
             fontWeight: component.weight,
             color: component.color,
+            letterSpacing: component.letter_spacing,
             textAlign: component.horizontal_alignment,
             position: 'relative'
         });
@@ -43,11 +46,36 @@ export class TextRenderer {
 
         setTimeout(() => {
             let csjs = new Csjs();
-            csjs.fillSpaceCenter(text, container.width(), container.height());
+            csjs.fillSpace(text, container.width(), container.height(), component.horizontal_alignment);
         });        
     
         return container;
     }
 
+    getAlignItemsByVerticalAlignment(verticalAlignment) {
+        switch(verticalAlignment){
+            case "top":
+                return "flex-start";
+            case "center":
+                return "center";
+            case "bottom":
+                return "flex-end";
+            default:
+                throw "Vertical alignment " +  verticalAlignment + " not found";
+        }
+    }
+
+    getDirectionFromHorizontalAlignment(horizontalAlignment) {
+        switch(horizontalAlignment){
+            case "left":
+                return "ltr";
+            case "center":
+                return "ltr";
+            case "right":
+                return "rtl";
+            default:
+                throw "Horizontal alignment " +  horizontalAlignment + " not found";
+        }
+    }
 }
 

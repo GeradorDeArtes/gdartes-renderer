@@ -7,7 +7,7 @@ export class MainRenderer {
         frame.empty();
     }
 
-    render = (template, state) => {
+    render = (template, input, state) => {
         this.frame.width(template.width);
         this.frame.height(template.height);
 
@@ -15,7 +15,7 @@ export class MainRenderer {
         let textRenderer = new TextRenderer();
 
         template.components.forEach(component => {
-            let value = state[component.id];
+            let value = state[component.input];
             if (component.type === 'static-image') {
                 let img = imageRenderer.render(component, value);
                 this.frame.append(img);
