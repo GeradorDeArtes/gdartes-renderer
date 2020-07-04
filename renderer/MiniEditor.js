@@ -39,6 +39,8 @@ export class MiniEditor {
         this.propertiesElement.empty();
         if (component.type === 'dinamic-text') {
             this.openTextProperties(component);
+        } else if (component.type === 'static-image') {
+            this.openImageProperties(component);
         }
     }
 
@@ -130,6 +132,26 @@ export class MiniEditor {
             letterSpacingLabelElement,
             fillLabelElement
         );
+
+        this.propertiesElement.append(positionOptionsElement, sizeOptionsElement, otherOptionsElement);
+    }
+
+    openImageProperties(component) {
+        let positionOptionsElement = $('<div></div>').append($('<h3></h3>').text('Position'));
+        let xAnchorLabelElement = this.selectPropertyField('xAnchor', component.position, ['left', 'center', 'right']);
+        let yAnchorLabelElement = this.selectPropertyField('yAnchor', component.position, ['top', 'center', 'bottom']);
+        let xLabelElement = this.numericPropertyField('x', component.position);
+        let yLabelElement = this.numericPropertyField('y', component.position);
+        positionOptionsElement.append(xAnchorLabelElement, yAnchorLabelElement, xLabelElement, yLabelElement);
+
+        let sizeOptionsElement = $('<div></div>').append($('<h3></h3>').text('Size'));
+        let widthLabelElement = this.numericPropertyField('width', component.size);
+        let heightLabelElement = this.numericPropertyField('height', component.size);
+        sizeOptionsElement.append(widthLabelElement, heightLabelElement);
+
+        let otherOptionsElement = $('<div></div>').append($('<h3></h3>').text('Other'));
+        let fillLabelElement = this.selectPropertyField('fit', component, ['cover', 'contain']);
+        otherOptionsElement.append(fillLabelElement);
 
         this.propertiesElement.append(positionOptionsElement, sizeOptionsElement, otherOptionsElement);
     }

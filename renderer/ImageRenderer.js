@@ -10,8 +10,8 @@ export class ImageRenderer {
     
         img.css({
             objectFit: component.fit,
-            left: component.position.x,
-            top: component.position.y,
+            left: this.getLeft(component),
+            top: this.getTop(component),
         });
     
         return img;
@@ -19,6 +19,28 @@ export class ImageRenderer {
 
     getSrcAttribute = (src) => {
         return src.split(/:(.+)/)[1];
+    }
+
+    getLeft(component) {
+        switch(component.position.xAnchor) {
+            case "left":
+                return component.position.x;
+            case "center":
+                return component.position.x - component.size.width / 2;
+            case "right":
+                return component.position.x - component.size.width;
+        }
+    }
+
+    getTop(component) {
+        switch(component.position.yAnchor) {
+            case "top":
+                return component.position.y;
+            case "center":
+                return component.position.y - component.size.height / 2;
+            case "bottom":
+                return component.position.y - component.size.height;
+        }
     }
 
 }

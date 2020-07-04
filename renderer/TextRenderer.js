@@ -48,15 +48,15 @@ export class TextRenderer {
         let csjs = new Csjs();
         switch(component.fill) {
             case "none":
-                setTimeout(() => {
+                window.requestAnimationFrame(() => {
                     csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
-                }, 200);
+                });
                 break;
             case "width":
-                setTimeout(() => {
+                window.requestAnimationFrame(() => {
                     csjs.fillWidth(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
-                }, 200);
-                break
+                });
+                break;
             default:
                 throw "Fill " + component.fill + " não existe";
 
