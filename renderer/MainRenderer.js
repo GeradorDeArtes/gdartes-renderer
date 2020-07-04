@@ -4,10 +4,11 @@ import { TextRenderer } from "./TextRenderer.js";
 export class MainRenderer {
     constructor(frame) {
         this.frame = frame;
-        frame.empty();
     }
 
     render = (template, input, state) => {
+        this.frame.empty();
+
         this.frame.width(template.width);
         this.frame.height(template.height);
 

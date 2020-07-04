@@ -2,6 +2,22 @@
 <link href="css/default-style.css" rel="stylesheet">
 <link href="css/ilustrabot.css" rel="stylesheet">
 
+<div style="float: right;">
+
+    <div id="states-list">
+
+    </div>
+    
+    <div id="components-list">
+    
+    </div>
+    
+    <div id="properties">
+    
+    </div>
+
+</div>
+
 <div id="frame">
 
 </div>
@@ -14,6 +30,7 @@
 <script type="module">
 
     import {MainRenderer} from "./renderer/MainRenderer.js"
+    import {MiniEditor} from "./renderer/MiniEditor.js"
 
     let template = {
         width: 600,
@@ -114,26 +131,19 @@
         }
     }
 
-    function renderTemplate(template) {
-        let frame = $('#frame');
-        let renderer = new MainRenderer(frame);
-        renderer.render(template, input, state);
-    }
+    let frameElement = $('#frame');
+    let renderer = new MainRenderer(frameElement);
+
+    let statesListElement = $('#states-list');
+    let componentsListElement = $('#components-list');
+    let propertiesElement = $('#properties');
+    let miniEditor = new MiniEditor(statesListElement, componentsListElement, propertiesElement);
 
     window.onload = () => {
-        renderTemplate(template)
+        renderer.render(template, input, state);
+        miniEditor.init(template, input, state, () => {
+            renderer.render(template, input, state);
+        });
     }
-
-    $(document).on('keypress',function(e) {
-        if(e.which == 44) {
-            // template.components[2].size.width -= 10;
-            template.components[2].letter_spacing -= 1;
-        }
-        if(e.which == 46) {
-            // template.components[2].size.width += 10;
-            template.components[2].letter_spacing += 1;
-        }
-        renderTemplate(template)
-    });
 
 </script>
