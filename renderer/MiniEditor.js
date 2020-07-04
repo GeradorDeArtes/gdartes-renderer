@@ -14,19 +14,10 @@ export class MiniEditor {
 
         for (let inputItemIndex in this.input) {
             let inputItem = this.input[inputItemIndex];
-            let labelElement = $('<label></label>');
+            let labelElement = null;
 
             if (inputItem.type === 'string') {
-                let spanElement = $('<span></span>').text(inputItem.description);
-                let inputElement = $('<input>').attr('type', 'text');
-
-                inputElement.val(this.state[inputItemIndex].value);
-                inputElement.on('input', () => {
-                    this.state[inputItemIndex].value = inputElement.val();
-                    this.onchangeCallback();
-                });
-
-                labelElement.append(spanElement, $('<br>'), inputElement);
+                labelElement = this.textPropertyField('value', this.state[inputItemIndex]);
             }
 
             this.statesListElement.append(labelElement);
@@ -51,91 +42,96 @@ export class MiniEditor {
         }
     }
 
+    textPropertyField(property, parentObject) {
+        let labelElement = $('<label></label>');
+        let spanElement = $('<span></span>').text(property);
+        let inputElement = $('<input>').attr('type', 'text');
+
+        inputElement.val(parentObject[property]);
+        inputElement.on('input', () => {
+            parentObject[property] = inputElement.val();
+            this.onchangeCallback();
+        });
+
+        labelElement.append(spanElement, $('<br>'), inputElement);
+
+        return labelElement;
+    }
+
+    selectPropertyField(property, parentObject, options) {
+        let labelElement = $('<label></label>').css({display: 'block', margin: '5px'});
+        let spanElement = $('<span></span>').text(property);
+        let selectElement = $('<select></select>');
+
+        options.forEach(option => {
+            selectElement.append($('<option>').text(option).val(option));
+        });
+        selectElement.val(parentObject[property]);
+
+        selectElement.on('change', () => {
+            parentObject[property] = selectElement.val();
+            this.onchangeCallback();
+        });
+
+        labelElement.append(spanElement, selectElement);
+        
+        return labelElement;
+    }
+
+    numericPropertyField(property, parentObject) {
+        let labelElement = $('<label></label>').css({display: 'block', margin: '5px'});
+        let spanElement = $('<span></span>').text(property);
+        let inputElement = $('<input>').attr({type: 'number'});
+
+        if (typeof parentObject[property] === 'string') {
+            parentObject[property] = parentObject[property].replace(/\D/g,'');
+        }
+
+        inputElement.val(parentObject[property]);
+        inputElement.on('change', () => {
+            parentObject[property] = inputElement.val();
+            this.onchangeCallback();
+        });
+
+        labelElement.append(spanElement, inputElement);
+
+        return labelElement;
+    }
+
     openTextProperties(component) {
         let positionOptionsElement = $('<div></div>').append($('<h3></h3>').text('Position'));
-
-        positionOptionsElement.append($('<p></p>').text('xAnchor'));
-        let xAnchorOptions = ['left', 'center', 'right'];
-        xAnchorOptions.forEach(xAnchorOption => {
-            let labelElement = $('<label></label>');
-            let inputElement = $('<input>').attr({type: 'radio', name: 'xAnchor'}).val(xAnchorOption);
-            let spanElement = $('<span></span>').text(xAnchorOption);
-
-            if (xAnchorOption === component.position.xAnchor) {
-                inputElement.prop('checked', true);    
-            }
-
-            inputElement.on('change', () => {
-                component.position.xAnchor = inputElement.val();
-                this.onchangeCallback();
-            });
-
-            labelElement.append(inputElement, spanElement);
-            positionOptionsElement.append(labelElement);
-        });
-
-        positionOptionsElement.append($('<p></p>').text('yAnchor'));
-        let yAnchorOptions = ['top', 'center', 'bottom'];
-        yAnchorOptions.forEach(yAnchorOption => {
-            let labelElement = $('<label></label>');
-            let inputElement = $('<input>').attr({type: 'radio', name: 'yAnchor'}).val(yAnchorOption);
-            let spanElement = $('<span></span>').text(yAnchorOption);
-
-            if (yAnchorOption === component.position.yAnchor) {
-                inputElement.prop('checked', true);    
-            }
-
-            inputElement.on('change', () => {
-                component.position.yAnchor = inputElement.val();
-                this.onchangeCallback();
-            });
-
-            labelElement.append(inputElement, spanElement);
-            positionOptionsElement.append(labelElement);
-        });
-
-        let numericLabel = (label, defaultValue, callback) => {
-            let labelElement = $('<label></label>');
-            let inputElement = $('<input>').attr({type: 'number'}).val(defaultValue);
-            let spanElement = $('<p></p>').text(label);
-
-            inputElement.val(defaultValue);
-            inputElement.on('change', () => {
-                callback(inputElement);
-            });
-
-            labelElement.append(spanElement, inputElement);
-
-            return labelElement;
-        };
-
-        let xLabelElement = numericLabel('x', component.position.x, (inputElement) => {
-            component.position.x = inputElement.val();
-            this.onchangeCallback();
-        })
-        positionOptionsElement.append(xLabelElement);
-
-        let yLabelElement = numericLabel('y', component.position.y, (inputElement) => {
-            component.position.y = inputElement.val();
-            this.onchangeCallback();
-        })
-        positionOptionsElement.append(yLabelElement);
+        let xAnchorLabelElement = this.selectPropertyField('xAnchor', component.position, ['left', 'center', 'right']);
+        let yAnchorLabelElement = this.selectPropertyField('yAnchor', component.position, ['top', 'center', 'bottom']);
+        let xLabelElement = this.numericPropertyField('x', component.position);
+        let yLabelElement = this.numericPropertyField('y', component.position);
+        positionOptionsElement.append(xAnchorLabelElement, yAnchorLabelElement, xLabelElement, yLabelElement);
 
         let sizeOptionsElement = $('<div></div>').append($('<h3></h3>').text('Size'));
+        let widthLabelElement = this.numericPropertyField('width', component.size);
+        let heightLabelElement = this.numericPropertyField('height', component.size);
+        sizeOptionsElement.append(widthLabelElement, heightLabelElement);
 
-        let widthLabelElement = numericLabel('width', component.size.width, (inputElement) => {
-            component.size.width = inputElement.val();
-            this.onchangeCallback();
-        })
-        sizeOptionsElement.append(widthLabelElement);
+        let otherOptionsElement = $('<div></div>').append($('<h3></h3>').text('Other'));
+        let verticalAlignmentLabelElement = this.selectPropertyField('vertical_alignment', component, ['top', 'center', 'bottom']);
+        let horizontalAlignmentLabelElement = this.selectPropertyField('horizontal_alignment', component, ['left', 'center', 'right']);
+        let fontFamilyLabelElement = this.selectPropertyField('font_family', component, ['Roboto', 'serif', 'sans-serif']);
+        let fontSizeLabelElement = this.numericPropertyField('font_size', component);
+        let weightLabelElement = this.selectPropertyField('weight', component, ['normal', 'bold']);
+        let colorLabelElement = this.textPropertyField('color', component);
+        let letterSpacingLabelElement = this.numericPropertyField('letter_spacing', component);
+        let fillLabelElement = this.selectPropertyField('fill', component, ['none', 'width']);
+        otherOptionsElement.append(
+            verticalAlignmentLabelElement,
+            horizontalAlignmentLabelElement,
+            fontFamilyLabelElement,
+            fontSizeLabelElement,
+            weightLabelElement,
+            colorLabelElement,
+            letterSpacingLabelElement,
+            fillLabelElement
+        );
 
-        let heightLabelElement = numericLabel('height', component.size.height, (inputElement) => {
-            component.size.height = inputElement.val();
-            this.onchangeCallback();
-        })
-        sizeOptionsElement.append(heightLabelElement);
-
-        this.propertiesElement.append(positionOptionsElement, sizeOptionsElement);
+        this.propertiesElement.append(positionOptionsElement, sizeOptionsElement, otherOptionsElement);
     }
 
 }
