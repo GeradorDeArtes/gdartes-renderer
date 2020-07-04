@@ -9,8 +9,8 @@ export class TextRenderer {
         container.css({
             width: component.size.width,
             height: component.size.height,
-            left: component.position.x,
-            top: component.position.y,
+            left: this.getLeft(component),
+            top: this.getTop(component),
             backgroundColor: 'blue',
             display: 'flex',
             justifyContent: component.horizontal_alignment,
@@ -45,11 +45,22 @@ export class TextRenderer {
         text.append(p);
         container.append(text);
 
-        setTimeout(() => {
-            let csjs = new Csjs();
-            csjs.fillSpace(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
-        }, 200);        
-    
+        let csjs = new Csjs();
+        switch(component.fill) {
+            case "none":
+                setTimeout(() => {
+                    csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
+                }, 200);
+                break;
+            case "width":
+                setTimeout(() => {
+                    csjs.fillWidth(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
+                }, 200);
+                break
+            default:
+                throw "Fill " + component.fill + " não existe";
+
+        }
         return container;
     }
 
@@ -76,6 +87,28 @@ export class TextRenderer {
                 return "rtl";
             default:
                 throw "Horizontal alignment " +  horizontalAlignment + " not found";
+        }
+    }
+
+    getLeft(component) {
+        switch(component.position.xAnchor) {
+            case "left":
+                return component.position.x;
+            case "center":
+                return component.position.x - component.size.width / 2;
+            case "right":
+                return component.position.x - component.size.width;
+        }
+    }
+
+    getTop(component) {
+        switch(component.position.yAnchor) {
+            case "top":
+                return component.position.y;
+            case "center":
+                return component.position.y - component.size.height / 2;
+            case "bottom":
+                return component.position.y - component.size.height;
         }
     }
 }

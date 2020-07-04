@@ -14,10 +14,14 @@ export class Csjs {
 		element.css('height', scale * child.height())
 	}
 
-	fillSpace = (element, width, height, horizontal_alignment, letter_spacing) => {
+	fillWidth = (element, width, height, horizontal_alignment, letter_spacing) => {
 		let text = element.children().first();
 		let lines = text.get(0).getClientRects().length;
 		
+		/*
+			Se a frase tiver apenas uma linha e for impossível ajustar ela à width desejada,
+			apenas usa-se a height máxima para ajustar ao container
+		*/
 		if(lines == 1) {
 			let ratioContainer = width/height;
 			let ratioText =  text.width()/text.height();
@@ -36,10 +40,24 @@ export class Csjs {
 		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment);
 		element.css('transform', 'scale(' + scale + ') translateX(' + translateX + 'px)');
 
-		if(element.height() * scale > height ) {
+		if(element.height() * scale > height) {
 			let fontSize = parseInt(element.css('font-size'));
 			element.css('fontSize', fontSize-1);
-			this.fillSpace(element, width, height, horizontal_alignment, letter_spacing);
+			this.fillWidth(element, width, height, horizontal_alignment, letter_spacing);
+		}
+	}
+
+	fillNone = (element, width, height, horizontal_alignment, letter_spacing) => {
+		element.css('transform-origin', horizontal_alignment);
+		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment);
+		element.css('transform', 'translateX(' + translateX + 'px)');
+
+		if(element.height() > height || element.width() > width) {
+			let fontSize = parseInt(element.css('font-size'));
+			if(fontSize > 2){
+				element.css('fontSize', fontSize-1);
+				this.fillNone(element, width, height, horizontal_alignment, letter_spacing);
+			}
 		}
 	}
 
