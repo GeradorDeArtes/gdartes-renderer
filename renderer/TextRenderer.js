@@ -31,7 +31,8 @@ export class TextRenderer {
             color: component.color,
             letterSpacing: component.letter_spacing,
             textAlign: component.horizontal_alignment,
-            position: 'relative'
+            position: 'relative',
+            direction: 'ltr'
         });
 
         let p = $('<p>');
@@ -46,7 +47,7 @@ export class TextRenderer {
 
         setTimeout(() => {
             let csjs = new Csjs();
-            csjs.fillSpace(text, container.width(), container.height(), component.horizontal_alignment);
+            csjs.fillSpace(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
         }, 200);        
     
         return container;
