@@ -15,7 +15,22 @@ export class Csjs {
 	}
 
 	fillSpace = (element, width, height, horizontal_alignment) => {
-		let scale = width / element.children().first().width();
+		let text = element.children().first();
+		let lines = text.get(0).getClientRects().length;
+		
+		if(lines == 1) {
+			let ratioContainer = width/height;
+			let ratioText =  text.width()/text.height();
+
+			if(ratioText < ratioContainer) {
+				let scale = height / text.height();
+				element.css('transform-origin', horizontal_alignment);
+				element.css('transform', 'scale(' + scale + ')');
+				return;
+			}
+		}
+		
+		let scale = width / text.width();
 		element.css('transform-origin', horizontal_alignment);
 		element.css('transform', 'scale(' + scale + ')');
 
