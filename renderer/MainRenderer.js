@@ -25,8 +25,6 @@ export class MainRenderer {
                 this.frame.append(text);
             }
         });
-
-        this.frame.css('transform', 'scale(0.5)');
     }
 
 }
