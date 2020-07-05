@@ -121,6 +121,7 @@ export class MiniEditor {
         let weightLabelElement = this.selectPropertyField('weight', component, ['normal', 'bold']);
         let colorLabelElement = this.textPropertyField('color', component);
         let letterSpacingLabelElement = this.numericPropertyField('letter_spacing', component);
+        let lineHeightLabelElement = this.numericPropertyField('line_height', component);
         let fillLabelElement = this.selectPropertyField('fill', component, ['none', 'width']);
         otherOptionsElement.append(
             verticalAlignmentLabelElement,
@@ -130,6 +131,7 @@ export class MiniEditor {
             weightLabelElement,
             colorLabelElement,
             letterSpacingLabelElement,
+            lineHeightLabelElement,
             fillLabelElement
         );
 

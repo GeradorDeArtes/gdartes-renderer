@@ -30,6 +30,7 @@ export class TextRenderer {
             fontWeight: component.weight,
             color: component.color,
             letterSpacing: component.letter_spacing,
+            lineHeight: component.line_height,
             textAlign: component.horizontal_alignment,
             position: 'relative',
             direction: 'ltr'
