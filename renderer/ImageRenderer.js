@@ -12,6 +12,7 @@ export class ImageRenderer {
             objectFit: component.fit,
             left: this.getLeft(component),
             top: this.getTop(component),
+            position: "absolute"
         });
     
         return img;
