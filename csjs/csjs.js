@@ -1,6 +1,6 @@
 export class Csjs {
 
-	scale = (element, options) => {
+	scale(element, options) {
 		let width = options.width !== undefined ? options.width : options.maxWidth
 	
 		let child = element.children().first()
@@ -14,7 +14,7 @@ export class Csjs {
 		element.css('height', scale * child.height())
 	}
 
-	fillWidth = (element, width, height, horizontal_alignment, letter_spacing) => {
+	fillWidth(element, width, height, horizontal_alignment, letter_spacing) {
 		let text = element.children().first();
 		let lines = text.get(0).getClientRects().length;
 		
@@ -47,7 +47,7 @@ export class Csjs {
 		}
 	}
 
-	fillNone = (element, width, height, horizontal_alignment, letter_spacing) => {
+	fillNone(element, width, height, horizontal_alignment, letter_spacing) {
 		element.css('transform-origin', horizontal_alignment);
 		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment);
 		element.css('transform', 'translateX(' + translateX + 'px)');

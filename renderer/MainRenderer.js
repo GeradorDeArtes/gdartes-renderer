@@ -6,7 +6,7 @@ export class MainRenderer {
         this.frame = frame;
     }
 
-    render = (template, input, state) => {
+    render(template, input, state) {
         this.frame.empty();
 
         this.frame.width(template.width);

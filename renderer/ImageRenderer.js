@@ -1,6 +1,6 @@
 export class ImageRenderer {
 
-    render = (component, value) => {
+    render(component, value) {
         let img = $('<img>');
     
         img.attr('src', this.getSrcAttribute(component.src));
@@ -17,7 +17,7 @@ export class ImageRenderer {
         return img;
     }
 
-    getSrcAttribute = (src) => {
+    getSrcAttribute(src) {
         return src.split(/:(.+)/)[1];
     }
 

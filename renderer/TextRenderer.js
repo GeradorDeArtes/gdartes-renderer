@@ -2,7 +2,7 @@ import { Csjs } from "../csjs/csjs.js";
 
 export class TextRenderer {
 
-    render = (component, value) => {
+    render(component, value) {
         let container = $('<div>');
         container.addClass('csjs-scale-container');
         
