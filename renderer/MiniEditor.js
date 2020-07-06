@@ -80,10 +80,10 @@ export class MiniEditor {
         return labelElement;
     }
 
-    numericPropertyField(property, parentObject) {
+    numericPropertyField(property, parentObject, step = 1) {
         let labelElement = $('<label></label>').css({display: 'block', margin: '5px'});
         let spanElement = $('<span></span>').text(property);
-        let inputElement = $('<input>').attr({type: 'number'});
+        let inputElement = $('<input>').attr({type: 'number', step: step});
 
         if (typeof parentObject[property] === 'string') {
             parentObject[property] = parentObject[property].replace(/\D/g,'');
@@ -121,7 +121,7 @@ export class MiniEditor {
         let weightLabelElement = this.selectPropertyField('weight', component, ['normal', 'bold']);
         let colorLabelElement = this.textPropertyField('color', component);
         let letterSpacingLabelElement = this.numericPropertyField('letter_spacing', component);
-        let lineHeightLabelElement = this.numericPropertyField('line_height', component);
+        let lineHeightLabelElement = this.numericPropertyField('line_height', component, 0.1);
         let fillLabelElement = this.selectPropertyField('fill', component, ['none', 'width']);
         otherOptionsElement.append(
             verticalAlignmentLabelElement,
