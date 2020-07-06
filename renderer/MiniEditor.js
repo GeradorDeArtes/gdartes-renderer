@@ -37,7 +37,7 @@ export class MiniEditor {
 
     openProperties(component) {
         this.propertiesElement.empty();
-        if (component.type === 'dinamic-text') {
+        if (component.type === 'dynamic-text') {
             this.openTextProperties(component);
         } else if (component.type === 'static-image') {
             this.openImageProperties(component);

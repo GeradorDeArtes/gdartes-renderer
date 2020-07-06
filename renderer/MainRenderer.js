@@ -20,7 +20,7 @@ export class MainRenderer {
             if (component.type === 'static-image') {
                 let img = imageRenderer.render(component, value);
                 this.frame.append(img);
-            } else if (component.type === 'dinamic-text') {
+            } else if (component.type === 'dynamic-text') {
                 let text = textRenderer.render(component, value);
                 this.frame.append(text);
             }
