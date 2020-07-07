@@ -29,7 +29,7 @@ export class TextRenderer {
             fontSize: component.font_size,
             fontWeight: component.weight,
             color: component.color,
-            letterSpacing: component.letter_spacing,
+            letterSpacing: this.getLetterSpacing(component),
             lineHeight: component.line_height,
             textAlign: component.horizontal_alignment,
             position: 'relative',
@@ -50,12 +50,12 @@ export class TextRenderer {
         switch(component.fill) {
             case "none":
                 window.requestAnimationFrame(() => {
-                    csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
+                    csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing, component.font_size);
                 });
                 break;
             case "width":
                 window.requestAnimationFrame(() => {
-                    csjs.fillWidth(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing);
+                    csjs.fillWidth(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing, component.font_size);
                 });
                 break;
             default:
@@ -111,6 +111,10 @@ export class TextRenderer {
             case "bottom":
                 return component.position.y - component.size.height;
         }
+    }
+
+    getLetterSpacing(component) {
+        return component.letter_spacing / 100 * component.font_size;
     }
 }
 
