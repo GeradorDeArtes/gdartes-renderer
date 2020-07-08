@@ -11,7 +11,7 @@ export class TextRenderer {
             height: component.size.height,
             left: this.getLeft(component),
             top: this.getTop(component),
-            backgroundColor: 'blue',
+            border: '2px solid black',
             display: 'flex',
             justifyContent: component.horizontal_alignment,
             alignItems: this.getAlignItemsByVerticalAlignment(component.vertical_alignment),

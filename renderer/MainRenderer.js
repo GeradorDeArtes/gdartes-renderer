@@ -17,10 +17,10 @@ export class MainRenderer {
 
         template.components.forEach(component => {
             let value = state[component.input];
-            if (component.type === 'static-image') {
+            if (component.type === 'image') {
                 let img = imageRenderer.render(component, value);
                 this.frame.append(img);
-            } else if (component.type === 'dynamic-text') {
+            } else if (component.type === 'text') {
                 let text = textRenderer.render(component, value);
                 this.frame.append(text);
             }
