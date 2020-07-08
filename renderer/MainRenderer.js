@@ -16,7 +16,7 @@ export class MainRenderer {
         let textRenderer = new TextRenderer();
 
         template.components.forEach(component => {
-            let value = state[component.input];
+            let value = component.input ? state[component.input].value : component.value;
             if (component.type === 'image') {
                 let img = imageRenderer.render(component, value);
                 this.frame.append(img);

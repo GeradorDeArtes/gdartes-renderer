@@ -37,7 +37,7 @@ export class TextRenderer {
         });
 
         let p = $('<p>');
-        p.html(value.value);
+        p.html(value);
 
         p.css({
             display: 'inline',
