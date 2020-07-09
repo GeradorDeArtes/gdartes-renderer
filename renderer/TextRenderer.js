@@ -25,10 +25,8 @@ export class TextRenderer {
         text.addClass('csjs-scale-content');
     
         text.css({
-            fontFamily: component.font_family,
             fontSize: component.font_size,
             fontWeight: component.weight,
-            color: component.color,
             letterSpacing: this.getLetterSpacing(component),
             lineHeight: component.line_height,
             textAlign: component.horizontal_alignment,
@@ -41,6 +39,8 @@ export class TextRenderer {
 
         p.css({
             display: 'inline',
+            fontFamily: component.font_family,
+            color: component.color,
         });
 
         text.append(p);
