@@ -16,7 +16,7 @@ export class MainRenderer {
         let textRenderer = new TextRenderer();
 
         template.components.forEach(component => {
-            let value = component.input ? state[component.input].value : component.value;
+            let value = this.getValueByType(component, state);
             if (component.type === 'image') {
                 let img = imageRenderer.render(component, value);
                 this.frame.append(img);
@@ -25,6 +25,17 @@ export class MainRenderer {
                 this.frame.append(text);
             }
         });
+    }
+
+    getValueByType(component, state) {
+        switch(component.input_type) {
+            case "static":
+                return component.value;
+            case "dynamic":
+                return state[component.input].value;
+            default:
+                throw "InputType inválido";
+        }
     }
 
 }
