@@ -50,12 +50,14 @@ export class TextRenderer {
         switch(component.fill) {
             case "none":
                 window.requestAnimationFrame(() => {
-                    csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing, component.font_size);
+                    csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment,
+                        component.vertical_alignment, component.letter_spacing, component.font_size);
                 });
                 break;
             case "width":
                 window.requestAnimationFrame(() => {
-                    csjs.fillWidth(text, container.width(), container.height(), component.horizontal_alignment, component.letter_spacing, component.font_size);
+                    csjs.fillWidth(text, container.width(), container.height(), component.horizontal_alignment, 
+                        component.vertical_alignment, component.letter_spacing, component.font_size);
                 });
                 break;
             default:
