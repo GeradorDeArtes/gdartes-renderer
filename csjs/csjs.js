@@ -28,7 +28,7 @@ export class Csjs {
 
 			if(ratioText < ratioContainer) {
 				let scale = height / text.height();
-				element.css('transform-origin', `${vertical_alignment} ${horizontal_alignment}`);
+				element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
 				let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
 				element.css('transform', 'scale(' + scale + ') translateX(' + translateX + 'px)');
 				return;
@@ -36,7 +36,7 @@ export class Csjs {
 		}
 		
 		let scale = width / (text.width() - this.getLetterSpacing(letter_spacing, font_size));
-		element.css('transform-origin', horizontal_alignment);
+		element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
 		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
 		element.css('transform', 'scale(' + scale + ') translateX(' + translateX + 'px)');
 
@@ -48,7 +48,7 @@ export class Csjs {
 	}
 
 	fillNone(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size) {
-		element.css('transform-origin', `${vertical_alignment} ${horizontal_alignment}`);
+		element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
 		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
 		element.css('transform', 'translateX(' + translateX + 'px)');
 
