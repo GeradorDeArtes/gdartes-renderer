@@ -7,7 +7,7 @@ export class MainRenderer {
     }
 
     render(template, input, state) {
-        this.frame.empty();
+        this.frame.find('*').not('.selection').remove();
 
         this.frame.width(template.width);
         this.frame.height(template.height);
