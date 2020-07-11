@@ -43,7 +43,7 @@ export class Csjs {
 		if(element.height() * scale > height) {
 			let fontSize = parseInt(element.css('font-size'));
 			element.css('fontSize', fontSize-1);
-			this.fillWidth(element, width, height, horizontal_alignment, letter_spacing, font_size);
+			this.fillWidth(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size);
 		}
 	}
 
@@ -56,7 +56,7 @@ export class Csjs {
 			let fontSize = parseInt(element.css('font-size'));
 			if(fontSize > 2){
 				element.css('fontSize', fontSize-1);
-				this.fillNone(element, width, height, horizontal_alignment, letter_spacing, font_size);
+				this.fillNone(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size);
 			}
 		}
 	}
