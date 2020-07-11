@@ -3,7 +3,7 @@ export class ImageRenderer {
     render(component, value) {
         let img = $('<img>');
     
-        img.attr('src', this.getSrcAttribute(component.src));
+        img.attr('src', this.getSrcAttribute(value));
         img.width(component.size.width);
         img.height(component.size.height);
         img.addClass('image');
