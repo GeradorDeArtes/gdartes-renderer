@@ -32,7 +32,10 @@ export class MainRenderer {
             case "static":
                 return component.value;
             case "dynamic":
-                return state[component.input].value;
+                if(state[component.input]) {
+                    return state[component.input].value;
+                }
+                return "";
             default:
                 throw "InputType inválido";
         }
