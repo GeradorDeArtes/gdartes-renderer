@@ -15,16 +15,15 @@ export class MainRenderer {
         let imageRenderer = new ImageRenderer();
         let textRenderer = new TextRenderer();
 
-        let componentsLength = template.components.length;
         template.components.forEach((component, index) => {
             let value = this.getValueByType(component, state);
             if (component.type === 'image') {
                 let img = imageRenderer.render(component, value);
-                img.css('z-index', componentsLength - index);
+                img.css('z-index', 100 - index);
                 this.frame.append(img);
             } else if (component.type === 'text') {
                 let text = textRenderer.render(component, value);
-                text.css('z-index', componentsLength - index);
+                text.css('z-index', 100 - index);
                 this.frame.append(text);
             }
         });
