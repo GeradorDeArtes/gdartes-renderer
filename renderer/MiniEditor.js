@@ -1,4 +1,4 @@
-export class MiniEditor {
+class MiniEditor {
 
     constructor(statesListElement, componentsListElement, propertiesElement) {
         this.statesListElement = statesListElement;

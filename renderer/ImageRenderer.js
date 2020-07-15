@@ -1,4 +1,4 @@
-export class ImageRenderer {
+class ImageRenderer {
 
     render(component, value) {
         let img = $('<img>');

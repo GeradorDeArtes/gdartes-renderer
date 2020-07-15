@@ -1,7 +1,4 @@
-import { ImageRenderer } from "./ImageRenderer.js";
-import { TextRenderer } from "./TextRenderer.js";
-
-export class MainRenderer {
+class MainRenderer {
     constructor(frame) {
         this.frame = frame;
     }

@@ -1,6 +1,4 @@
-import { Csjs } from "../csjs/csjs.js";
-
-export class TextRenderer {
+class TextRenderer {
 
     render(component, value) {
         let container = $('<div>');

@@ -1,4 +1,4 @@
-export class Csjs {
+class Csjs {
 
 	scale(element, options) {
 		let width = options.width !== undefined ? options.width : options.maxWidth
