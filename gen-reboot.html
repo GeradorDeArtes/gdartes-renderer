@@ -33,6 +33,7 @@
     import {MiniEditor} from "./renderer/MiniEditor.js"
 
     let template = {
+        version: 1,
         width: 600,
         height: 600,
         components: [
@@ -132,14 +133,20 @@
     }
 
     let input = {
-        1: {
-            "type": "string",
-            "description": "Chamada"
-        }
+        version: 1,
+        nextId: 2,
+        inputs: [
+            {
+                id: 1,
+                "type": "string",
+                "description": "Chamada"
+            }
+        ]
     }
 
     let state = {
-        '1': {
+        version: 1,
+        1: {
             value: 'Um texto feito para quebrasse kkkkkkkkkkkkkkkkkkkkkkkkkkk antessssss dele poder aumentar?'
         },
         2: {
