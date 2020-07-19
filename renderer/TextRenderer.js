@@ -32,6 +32,7 @@ class TextRenderer {
         });
 
         let p = $('<p>');
+        value = value.trim();
         value = value.split('\n').join('<br>');
         p.html(value);
 

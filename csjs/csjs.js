@@ -16,13 +16,26 @@ class Csjs {
 
 	fillWidth(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size) {
 		let text = element.children().first();
-		let lines = text.get(0).getClientRects().length;
+		let rects = text.get(0).getClientRects();
+		let lines = 1;
 		
+		for(let i = 1; i < rects.length; i+=1) {
+			if(rects[i].width != 0 || rects[i-1].width == 0) {
+				lines += 1;	
+			}
+		}
+
 		/*
 			Se a frase tiver apenas uma linha e for impossível ajustar ela à width desejada,
 			apenas usa-se a height máxima para ajustar ao container
 		*/
-		if(lines == 1) {
+		let brMatches = text.html().match(/\<br\>/g);
+		let minLines = 1;
+		if(brMatches) {
+			minLines += brMatches.length;
+		}
+		
+		if(lines == minLines) {
 			let ratioContainer = width/height;
 			let ratioText =  text.width()/text.height();
 
