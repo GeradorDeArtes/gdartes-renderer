@@ -42,7 +42,7 @@ class TextRenderer {
             color: component.color,
         });
 
-        if (component.text_border !== undefined) {
+        if (component.text_border !== undefined && component.text_border.thickness != 0) {
             p.css({
                 textShadow: this.generateTextBorder(component.text_border.thickness, component.text_border.color),
             }); 
