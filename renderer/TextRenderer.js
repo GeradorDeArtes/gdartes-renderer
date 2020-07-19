@@ -42,6 +42,12 @@ class TextRenderer {
             color: component.color,
         });
 
+        if (component.text_border !== undefined) {
+            p.css({
+                textShadow: this.generateTextBorder(component.text_border.thickness, component.text_border.color),
+            }); 
+        }
+
         text.append(p);
         container.append(text);
 
@@ -117,5 +123,30 @@ class TextRenderer {
     getLetterSpacing(component) {
         return component.letter_spacing / 100 * component.font_size;
     }
+
+    generateTextBorder(thickness, color) {
+        let pairHashes = {};
+        let pairs = [];
+        for (let x = -thickness; x <= thickness; x += 0.125) {
+            let yP = Math.round(Math.sqrt(thickness * thickness - x * x));
+            let yN = Math.round(-Math.sqrt(thickness * thickness - x * x));
+
+            let pairHash = Math.round(x) + ':' + yP;
+            if (pairHashes[pairHash] === undefined) {
+                pairHashes[pairHash] = 1;
+                pairs.push([Math.round(x), yP]);
+                pairs.push([Math.round(x), yN]);
+            }
+        }
+
+        let shadows = [];
+        for (let i in pairs) {
+            let pair = pairs[i];
+            shadows.push(`${pair[0]}px ${pair[1]}px 1px ${color}`);
+        }
+
+        return shadows.join(', ');
+    }
+
 }
 
