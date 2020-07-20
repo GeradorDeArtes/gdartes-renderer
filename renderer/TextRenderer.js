@@ -34,8 +34,8 @@ class TextRenderer {
         let p = $('<p>');
         if(typeof value === 'string' && value !== "") {
             value = value.trim();
+            value = value.split('\n').join('<br>');
         }
-        value = value.split('\n').join('<br>');
         p.html(value);
 
         p.css({
