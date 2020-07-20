@@ -32,7 +32,7 @@ class TextRenderer {
         });
 
         let p = $('<p>');
-        if(value !== null && value !== "") {
+        if(typeof value === 'string' && value !== "") {
             value = value.trim();
         }
         value = value.split('\n').join('<br>');
