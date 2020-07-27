@@ -37,10 +37,10 @@ class Csjs {
 		
 		if(lines == minLines) {
 			let ratioContainer = width/height;
-			let ratioText =  text.width()/text.height();
+			let ratioText =  element.width()/element.height();
 
 			if(ratioText < ratioContainer) {
-				let scale = height / text.height();
+				let scale = height / element.height();
 				element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
 				let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
 				element.css('transform', 'scale(' + scale + ') translateX(' + translateX + 'px)');
