@@ -37,7 +37,7 @@ class Csjs {
 		
 		if(lines == minLines) {
 			let ratioContainer = width/height;
-			let ratioText =  element.width()/element.height();
+			let ratioText = element.width()/element.height();
 
 			if(ratioText < ratioContainer) {
 				let scale = height / element.height();
@@ -49,6 +49,7 @@ class Csjs {
 		}
 		
 		let scale = width / (text.width() - this.getLetterSpacing(letter_spacing, font_size));
+
 		element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
 		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
 		element.css('transform', 'scale(' + scale + ') translateX(' + translateX + 'px)');
@@ -57,6 +58,19 @@ class Csjs {
 			let fontSize = parseInt(element.css('font-size'));
 			element.css('fontSize', fontSize-1);
 			this.fillWidth(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size);
+		}
+	}
+
+	fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size) {
+		element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
+		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
+		element.css('transform', 'translateX(' + translateX + 'px)');
+
+		if(element.height() < height && element.width() <= width && element.height() != 0) {
+			element.css('fontSize', font_size+1);
+			this.fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size+1);
+		} else {
+			element.css('fontSize', font_size-1);
 		}
 	}
 

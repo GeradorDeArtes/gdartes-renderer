@@ -67,10 +67,18 @@ class TextRenderer {
                         component.vertical_alignment, component.letter_spacing, component.font_size);
                 });
                 break;
+            case "largest":
+                window.requestAnimationFrame(() => {
+                    text.css({fontSize: 1});
+                    csjs.fillLargestFont(text, container.width(), container.height(), component.horizontal_alignment, 
+                        component.vertical_alignment, component.letter_spacing, 1);
+                });
+                break;
             default:
                 throw "Fill " + component.fill + " não existe";
 
         }
+        
         return container;
     }
 

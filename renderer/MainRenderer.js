@@ -1,9 +1,23 @@
 class MainRenderer {
+    
     constructor(frame) {
         this.frame = frame;
+        this.queueTemplate = null;
+        this.isRunning = false;
     }
 
     render(template, input, state) {
+
+        if(this.isRunning) {
+            this.queueTemplate = {};
+            this.queueTemplate.template = template;
+            this.queueTemplate.input = input;
+            this.queueTemplate.state = state;
+            return;
+        }
+        this.queueTemplate = null;
+        this.isRunning = true;
+
         this.frame.find('*').not('.selection').remove();
 
         this.frame.width(template.width);
@@ -24,6 +38,13 @@ class MainRenderer {
                 this.frame.append(text);
             }
         });
+        
+        setTimeout(() => {
+            this.isRunning = false;
+            if(this.queueTemplate) {
+                this.render(this.queueTemplate.template, this.queueTemplate.input, this.queueTemplate.state);
+            }
+        }, 30)
     }
 
     getValueByType(component, state) {
