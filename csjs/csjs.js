@@ -1,95 +1,47 @@
 class Csjs {
 
-	scale(element, options) {
-		let width = options.width !== undefined ? options.width : options.maxWidth
-	
-		let child = element.children().first()
-		let scale = width / child.width()
-		if(options.width === undefined){
-			scale = Math.min(1, scale)
-		}
-	
-		child.css('transform', 'scale(' + scale + ')')
-		element.css('width', scale * child.width())
-		element.css('height', scale * child.height())
-	}
+	_fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, max_font_size) {
+		let base_font_size = 1, font_size, abs_letter_spacing;
+		max_font_size += 1;
 
-	fillWidth(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size) {
-		let text = element.children().first();
-		let rects = text.get(0).getClientRects();
-		let lines = 1;
-		
-		for(let i = 1; i < rects.length; i+=1) {
-			if(rects[i].width != 0 || rects[i-1].width == 0) {
-				lines += 1;	
+		for (let i = 0; i < 12; i++) {
+			font_size = parseInt((base_font_size + max_font_size) / 2);
+			abs_letter_spacing = this.getAbsLetterSpacing(letter_spacing, font_size);
+			element.css({
+				'fontSize': font_size,
+				'letterSpacing': abs_letter_spacing
+			});
+			if (element.height() > height || element.width() > width) {
+				max_font_size = font_size;
+			} else {
+				base_font_size = font_size;
 			}
 		}
 
-		/*
-			Se a frase tiver apenas uma linha e for impossível ajustar ela à width desejada,
-			apenas usa-se a height máxima para ajustar ao container
-		*/
-		let brMatches = text.html().match(/\<br\>/g);
-		let minLines = 1;
-		if(brMatches) {
-			minLines += brMatches.length;
+		if (element.height() > height || element.width() > width) {
+			font_size -= 1;
+			abs_letter_spacing = this.getAbsLetterSpacing(letter_spacing, font_size);
 		}
-		
-		if(lines == minLines) {
-			let ratioContainer = width/height;
-			let ratioText = element.width()/element.height();
-
-			if(ratioText < ratioContainer) {
-				let scale = height / element.height();
-				element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
-				let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
-				element.css('transform', 'scale(' + scale + ') translateX(' + translateX + 'px)');
-				return;
-			}
-		}
-		
-		let scale = width / (text.width() - this.getLetterSpacing(letter_spacing, font_size));
+		element.css({
+			'fontSize': font_size,
+			'letterSpacing': abs_letter_spacing
+		});
 
 		element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
-		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
-		element.css('transform', 'scale(' + scale + ') translateX(' + translateX + 'px)');
-
-		if(element.height() * scale > height) {
-			let fontSize = parseInt(element.css('font-size'));
-			element.css('fontSize', fontSize-1);
-			this.fillWidth(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size);
-		}
-	}
-
-	fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size) {
-		element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
-		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
+		let translateX = this.getTranslateX(abs_letter_spacing, horizontal_alignment);
 		element.css('transform', 'translateX(' + translateX + 'px)');
+	}
 
-		if(element.height() < height && element.width() <= width && element.height() != 0) {
-			element.css('fontSize', font_size+1);
-			this.fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size+1);
-		} else {
-			element.css('fontSize', font_size-1);
-		}
+	fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing) {
+		this._fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, 3000);
 	}
 
 	fillNone(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size) {
-		element.css('transform-origin', `${horizontal_alignment} ${vertical_alignment}`);
-		let translateX = this.getTranslateX(letter_spacing, horizontal_alignment, font_size);
-		element.css('transform', 'translateX(' + translateX + 'px)');
-
-		if(element.height() > height || element.width() > width) {
-			let fontSize = parseInt(element.css('font-size'));
-			if(fontSize > 2){
-				element.css('fontSize', fontSize-1);
-				this.fillNone(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size);
-			}
-		}
+		this._fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size);
 	}
 
-	getTranslateX(letter_spacing, horizontal_alignment, font_size) {
-		let differenceBecauseLetterSpacing = this.getLetterSpacing(letter_spacing, font_size);
+	getTranslateX(abs_letter_spacing, horizontal_alignment) {
+		let differenceBecauseLetterSpacing = abs_letter_spacing;
 
 		switch(horizontal_alignment){
 			case "left":
@@ -101,7 +53,7 @@ class Csjs {
 		}
 	}
 
-	getLetterSpacing(letter_spacing, font_size) {
+	getAbsLetterSpacing(letter_spacing, font_size) {
 		return letter_spacing / 100 * font_size;
 	}
 

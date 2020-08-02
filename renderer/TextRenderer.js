@@ -24,7 +24,6 @@ class TextRenderer {
         text.css({
             fontSize: component.font_size,
             fontWeight: component.weight,
-            letterSpacing: this.getLetterSpacing(component),
             lineHeight: component.line_height,
             textAlign: component.horizontal_alignment,
             position: 'relative',
@@ -61,17 +60,10 @@ class TextRenderer {
                         component.vertical_alignment, component.letter_spacing, component.font_size);
                 });
                 break;
-            case "width":
-                window.requestAnimationFrame(() => {
-                    csjs.fillWidth(text, container.width(), container.height(), component.horizontal_alignment, 
-                        component.vertical_alignment, component.letter_spacing, component.font_size);
-                });
-                break;
             case "largest":
                 window.requestAnimationFrame(() => {
-                    text.css({fontSize: 1});
                     csjs.fillLargestFont(text, container.width(), container.height(), component.horizontal_alignment, 
-                        component.vertical_alignment, component.letter_spacing, 1);
+                        component.vertical_alignment, component.letter_spacing);
                 });
                 break;
             default:
@@ -128,10 +120,6 @@ class TextRenderer {
             case "bottom":
                 return component.position.y - component.size.height;
         }
-    }
-
-    getLetterSpacing(component) {
-        return component.letter_spacing / 100 * component.font_size;
     }
 
     generateTextBorder(thickness, color) {
