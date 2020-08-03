@@ -19,6 +19,9 @@ class ImageRenderer {
     }
 
     getSrcAttribute(src) {
+        if(src == null) {
+            return;
+        }
         return src.split(/:(.+)/)[1];
     }
 
