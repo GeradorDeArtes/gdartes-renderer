@@ -11,7 +11,7 @@ class Csjs {
 				'fontSize': font_size,
 				'letterSpacing': abs_letter_spacing
 			});
-			if (element.height() > height || element.width() > width) {
+			if ((height != '' && element.height() > height) || element.width() > width) {
 				max_font_size = font_size;
 			} else {
 				base_font_size = font_size;

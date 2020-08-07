@@ -15,6 +15,7 @@ class MainRenderer {
             this.queueTemplate.state = state;
             return;
         }
+
         this.queueTemplate = null;
         this.isRunning = true;
 
@@ -25,8 +26,9 @@ class MainRenderer {
 
         let imageRenderer = new ImageRenderer();
         let textRenderer = new TextRenderer();
+        let columnRenderer = new ColumnRenderer();
 
-        template.components.forEach((component, index) => {
+        template.components.forEach(async (component, index) => {
             let value = this.getValueByType(component, state);
             if (component.type === 'image') {
                 let img = imageRenderer.render(component, value);
@@ -36,6 +38,10 @@ class MainRenderer {
                 let text = textRenderer.render(component, value);
                 text.css('z-index', 100 - index);
                 this.frame.append(text);
+            } else if (component.type === 'column') {
+                let column = columnRenderer.render(component, state);
+                column.css('z-index', 100 - index);
+                this.frame.append(column);
             }
         });
         

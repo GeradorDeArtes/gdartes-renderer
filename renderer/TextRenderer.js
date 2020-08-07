@@ -1,7 +1,7 @@
 class TextRenderer {
 
-    render(component, value) {
-        let container = $('<div>');
+    render(component, value, elementAlreadyInFrame = null) {
+        let container = elementAlreadyInFrame ? elementAlreadyInFrame : $('<div>');
         container.addClass('csjs-scale-container');
         
         container.css({
@@ -16,8 +16,8 @@ class TextRenderer {
             position: 'absolute'
         })
 
-        let text = $('<div>');
-    
+        let text = elementAlreadyInFrame ? elementAlreadyInFrame.find('div') : $('<div>');
+        
         text.addClass('text');
         text.addClass('csjs-scale-content');
     
@@ -30,7 +30,8 @@ class TextRenderer {
             direction: 'ltr'
         });
 
-        let p = $('<p>');
+        let p = elementAlreadyInFrame ? elementAlreadyInFrame.find('div').find('p') : $('<p>');
+
         if(typeof value === 'string' && value !== "") {
             value = value.trim();
             value = value.split('\n').join('<br>');
@@ -55,16 +56,30 @@ class TextRenderer {
         let csjs = new Csjs();
         switch(component.fill) {
             case "none":
-                window.requestAnimationFrame(() => {
-                    csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment,
-                        component.vertical_alignment, component.letter_spacing, component.font_size);
-                });
+
+                let fillNone = () =>csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment,
+                component.vertical_alignment, component.letter_spacing, component.font_size);
+
+                if(elementAlreadyInFrame && elementAlreadyInFrame.length != 0) {
+                    fillNone();
+                } else {
+                    window.requestAnimationFrame(fillNone);
+                }
+
                 break;
             case "largest":
-                window.requestAnimationFrame(() => {
-                    csjs.fillLargestFont(text, container.width(), container.height(), component.horizontal_alignment, 
+                // window.requestAnimationFrame(() => {
+                    let fillLargestFont = () => csjs.fillLargestFont(text, component.size.width, component.size.height, component.horizontal_alignment, 
                         component.vertical_alignment, component.letter_spacing);
-                });
+
+                    if(elementAlreadyInFrame && elementAlreadyInFrame.length != 0) {
+                        fillLargestFont();
+                    } else {
+                        window.requestAnimationFrame(fillLargestFont);
+                    }
+
+                    
+                // });
                 break;
             default:
                 throw "Fill " + component.fill + " não existe";
