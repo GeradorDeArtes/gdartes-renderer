@@ -1,12 +1,15 @@
 class TextRenderer {
 
+    /*
+        elementAlreadyInFrame é o elemento em jQuery do componente que já está no frame. Se passado, ele será reutilizado.
+    */
     render(component, value, elementAlreadyInFrame = null) {
         let container = elementAlreadyInFrame ? elementAlreadyInFrame : $('<div>');
         container.addClass('csjs-scale-container');
         
         container.css({
             width: component.size.width,
-            height: component.size.height,
+            height: this.getHeight(component),
             left: this.getLeft(component),
             top: this.getTop(component),
             display: 'flex',
@@ -56,8 +59,7 @@ class TextRenderer {
         let csjs = new Csjs();
         switch(component.fill) {
             case "none":
-
-                let fillNone = () =>csjs.fillNone(text, container.width(), container.height(), component.horizontal_alignment,
+                let fillNone = () => csjs.fillNone(text, component.size.width, component.size.height, component.horizontal_alignment,
                 component.vertical_alignment, component.letter_spacing, component.font_size);
 
                 if(elementAlreadyInFrame && elementAlreadyInFrame.length != 0) {
@@ -68,18 +70,15 @@ class TextRenderer {
 
                 break;
             case "largest":
-                // window.requestAnimationFrame(() => {
-                    let fillLargestFont = () => csjs.fillLargestFont(text, component.size.width, component.size.height, component.horizontal_alignment, 
-                        component.vertical_alignment, component.letter_spacing);
+                let fillLargestFont = () => csjs.fillLargestFont(text, component.size.width, component.size.height, component.horizontal_alignment, 
+                    component.vertical_alignment, component.letter_spacing);
 
-                    if(elementAlreadyInFrame && elementAlreadyInFrame.length != 0) {
-                        fillLargestFont();
-                    } else {
-                        window.requestAnimationFrame(fillLargestFont);
-                    }
+                if(elementAlreadyInFrame && elementAlreadyInFrame.length != 0) {
+                    fillLargestFont();
+                } else {
+                    window.requestAnimationFrame(fillLargestFont);
+                }
 
-                    
-                // });
                 break;
             default:
                 throw "Fill " + component.fill + " não existe";
@@ -135,6 +134,13 @@ class TextRenderer {
             case "bottom":
                 return component.position.y - component.size.height;
         }
+    }
+
+    getHeight(component) {
+       if(component.size.height == 0 || component.size.height == '') {
+           return 'auto';
+       }
+       return component.size.height;
     }
 
     generateTextBorder(thickness, color) {

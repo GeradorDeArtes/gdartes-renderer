@@ -32,14 +32,17 @@ class MainRenderer {
             let value = this.getValueByType(component, state);
             if (component.type === 'image') {
                 let img = imageRenderer.render(component, value);
+                img.attr('component-id', component.id);
                 img.css('z-index', 100 - index);
                 this.frame.append(img);
             } else if (component.type === 'text') {
                 let text = textRenderer.render(component, value);
+                text.attr('component-id', component.id);
                 text.css('z-index', 100 - index);
                 this.frame.append(text);
             } else if (component.type === 'column') {
                 let column = columnRenderer.render(component, state);
+                column.attr('component-id', component.id);
                 column.css('z-index', 100 - index);
                 this.frame.append(column);
             }
@@ -50,7 +53,7 @@ class MainRenderer {
             if(this.queueTemplate) {
                 this.render(this.queueTemplate.template, this.queueTemplate.input, this.queueTemplate.state);
             }
-        }, 30)
+        }, 50)
     }
 
     getValueByType(component, state) {

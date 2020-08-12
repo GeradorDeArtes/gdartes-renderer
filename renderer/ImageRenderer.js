@@ -1,7 +1,10 @@
 class ImageRenderer {
 
-    render(component, value) {
-        let img = $('<img>');
+    /*
+        elementAlreadyInFrame é o elemento em jQuery do componente que já está no frame. Se passado, ele será reutilizado.
+    */
+    render(component, value, elementAlreadyInFrame = null) {
+        let img = elementAlreadyInFrame ? elementAlreadyInFrame : $('<img>');
     
         img.attr('src', this.getSrcAttribute(value));
         img.width(component.size.width);

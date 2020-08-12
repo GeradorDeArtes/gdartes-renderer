@@ -2,25 +2,11 @@ class ColumnRenderer {
 
     render(component, state) {
         let column = this.buildColumn(component);
-
         this.populateComponents(column, component, state);
-
         let heightOfFixedChildren = this.getFixedHeightOfAllChidren(component);
-        /// console.log("heightOfFixedChildren: " + heightOfFixedChildren);
 
         window.requestAnimationFrame(() => {
-            let finalHeightOfChildren = this.getHeightOfAllChidren(column, component);
-            // console.log("finalHeightOfChildren: " + finalHeightOfChildren);
-
-            if(finalHeightOfChildren > component.size.height) {
-                let availableHeight = component.size.height - heightOfFixedChildren;
-                let newHeights = this.getNewHeights(component.components, state, availableHeight);
-                // console.log(newHeights);
-                // console.log(availableHeight);
-                this.populateComponents(column, component, state, newHeights);
-            } else {
-                // this.populateComponents(column, component.components, state, null);
-            }
+            this.shrinkFontUntilFit(column, component, heightOfFixedChildren, state, 1);
         })
 
         return column;
@@ -39,38 +25,31 @@ class ColumnRenderer {
         return totalHeight;
     }
 
-    getHeightOfAllChidren(column, component) {
+    shrinkFontUntilFit(column, component, heightOfFixedChildren, state, shrinkFactor) {
+        if(shrinkFactor > 20) {
+            return;
+        }
+
+        let finalHeightOfChildren = this.getHeightOfAllChidren(column);
+
+        if(finalHeightOfChildren > component.size.height) {
+            this.populateComponents(column, component, state, shrinkFactor * 5);
+            this.shrinkFontUntilFit(column, component, heightOfFixedChildren, state, shrinkFactor + 1)
+        }
+    }
+
+    getHeightOfAllChidren(column) {
         let children = column.children();
         let totalHeight = 0;
 
         children.each(function(index) {
-            totalHeight += $(this).height();
+            totalHeight += $(this).outerHeight(true);
         });
-
+        
         return totalHeight;
     }
 
-    getNewHeights(components, state, availableHeight) {
-        console.log(availableHeight);
-        let newHeights = {};
-        let sum = this.getSumOfCharactersTimesFont(components, state);
-
-        components.forEach((component) => {
-            newHeights[component.id] = this.getValueByType(component, state).length * component.font_size / sum * availableHeight;
-        });
-
-        return newHeights;
-    }
-
-    getSumOfCharactersTimesFont(components, state) {
-        let sum = 0;
-        components.forEach((component) => {
-            sum += this.getValueByType(component, state).length * component.font_size;
-        });
-        return sum;
-    }
-
-    populateComponents(columnElement, columnComponent, state, definedHeights = null) {
+    populateComponents(columnElement, columnComponent, state, shrink = 0) {
         let imageRenderer = new ImageRenderer();
         let textRenderer = new TextRenderer();
 
@@ -79,37 +58,63 @@ class ColumnRenderer {
             let value = this.getValueByType(component, state);
 
             // Adicionando margem
-            if(index != 0 && !definedHeights) {
+            if(index != 0 && shrink == 0) {
                 let margin = this.buildMargin(columnComponent)
                 columnElement.append(margin);
             }
 
             if (component.type === 'image') {
-                let img = imageRenderer.render(component, value);
+                let elementAlreadyInFrame = Util.getElementInFrameByComponentId(component.id);
+                let img = imageRenderer.render(component, value, elementAlreadyInFrame);
+                
+                img.attr('component-id', component.id)
                 img.css('z-index', 100 - index);
-                columnElement.append(img);
-            } else if (component.type === 'text') {
+                img.css('position', 'relative');
 
-                if(definedHeights) {
-                    let newHeight = definedHeights[component.id];
-
-                    if(newHeight) {
-                        component = this.cloneComponent(component);
-                        component.size.height = newHeight;
-                    }
+                if(shrink == 0) {
+                    columnElement.append(img);
                 }
 
-                let elementAlreadyInFrame = this.getElementInFrameByComponentId(component.id);
-                let text = textRenderer.render(component, value, elementAlreadyInFrame);
+                requestAnimationFrame(() => {
+                    component.document_position = {};
+                    let imageOffset = img.offset();
+                    let frameOffset = $('#frame').offset();
+                    component.document_position.x = imageOffset.left - frameOffset.left;
+                    component.document_position.y = imageOffset.top - frameOffset.top;
+    
+                    component.document_size = {};
+                    component.document_size.width = img.width();
+                    component.document_size.height = img.height();
+                })
 
-                text.attr('component-id', component.id)
+            } else if (component.type === 'text') {
+
+                let componentClone = Util.cloneComponent(component);
+                //Diminui a fonte do component em relação ao shrink
+                componentClone.font_size = component.font_size * (100-shrink)/100;
+
+                let elementAlreadyInFrame = Util.getElementInFrameByComponentId(componentClone.id);
+                let text = textRenderer.render(componentClone, value, elementAlreadyInFrame);
+
+                text.attr('component-id', componentClone.id)
                 text.css('z-index', 100 - index);
                 text.css('position', 'relative');
-                if(!definedHeights) {
+
+                if(shrink == 0) {
                     columnElement.append(text);
                 }
 
-                text.css('height', 'auto');
+                requestAnimationFrame(() => {
+                    component.document_position = {};
+                    let textOffset = text.offset();
+                    let frameOffset = $('#frame').offset();
+                    component.document_position.x = textOffset.left - frameOffset.left;
+                    component.document_position.y = textOffset.top - frameOffset.top;
+    
+                    component.document_size = {};
+                    component.document_size.width = text.width();
+                    component.document_size.height = text.height();
+                })
             }
         });
     }
@@ -161,7 +166,9 @@ class ColumnRenderer {
             top: this.getTop(component),
             position: "absolute",
             display: "flex",
-            flexDirection: "column"
+            flexDirection: "column",
+            justifyContent: component.vertical_alignment,
+            alignItems: component.horizontal_alignment,
         });
 
         return column;
@@ -177,51 +184,6 @@ class ColumnRenderer {
 
         });
         return margin;
-    }
-
-    populateForTest(column) {
-        let t1 = $('<div>');
-        t1.html("kkkkkkkkkk um teste doido aqui mano  agora em gfd sd sdg sdg?");
-
-        let marginElement = $('<div>');
-
-        let t2 = $('<div>');
-        t2.html("kkkkkkkkkk um teste doido aqui mano  agora em gfd sd sdg sdg?");
-
-        t1.css({
-            fontSize: 50,
-            color: '#000000',
-        })
-
-        marginElement.css({
-            height: 50,
-            width: 50,
-            backgroundColor: 'red',
-            flexShrink: 0
-        });
-
-        t2.css({
-            fontSize: 50,
-            color: '#000000',
-        })
-
-        column.append(t1);
-        column.append(marginElement);
-        column.append(t2);
-    }
-
-    getElementInFrameByComponentId(componentId) {
-        let elementAlreadyInFrame = $('[component-id=' + componentId + ']');
-
-        if(elementAlreadyInFrame && elementAlreadyInFrame.length != 0){
-            return elementAlreadyInFrame;
-        }
-
-        return null;
-    }
-
-    cloneComponent(component) {
-        return JSON.parse(JSON.stringify(component));
     }
 
 }
