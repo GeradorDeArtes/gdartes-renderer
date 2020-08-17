@@ -94,6 +94,11 @@ class ColumnRenderer {
                 componentClone.font_size = component.font_size * (100-shrink)/100;
 
                 let elementAlreadyInFrame = Util.getElementInFrameByComponentId(componentClone.id);
+                
+                if(columnComponent.inbetween_margin < 0) {
+                    textRenderer.setNegativeMargin(columnComponent.inbetween_margin);
+                }
+
                 let text = textRenderer.render(componentClone, value, elementAlreadyInFrame);
 
                 text.attr('component-id', componentClone.id)

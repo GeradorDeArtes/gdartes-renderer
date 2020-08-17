@@ -16,7 +16,11 @@ class TextRenderer {
             justifyContent: component.horizontal_alignment,
             alignItems: this.getAlignItemsByVerticalAlignment(component.vertical_alignment),
             direction: this.getDirectionFromHorizontalAlignment(component.horizontal_alignment),
-            position: 'absolute'
+            position: 'absolute',
+            transform: this.getTransform(component.rotation ?? 0),
+            transformOrigin: this.getTransformOrigin(),
+            marginBottom: this.negativeMargin,
+            marginTop: this.negativeMargin,
         })
 
         let text = elementAlreadyInFrame ? elementAlreadyInFrame.find('div') : $('<div>');
@@ -86,6 +90,10 @@ class TextRenderer {
         }
         
         return container;
+    }
+
+    setNegativeMargin(negativeMargin) {
+        this.negativeMargin = negativeMargin;
     }
 
     getAlignItemsByVerticalAlignment(verticalAlignment) {
@@ -167,5 +175,13 @@ class TextRenderer {
         return shadows.join(', ');
     }
 
+    getTransform(rotation) {
+        console.log(rotation);
+        return "rotate(" + rotation + "deg)";
+    }
+
+    getTransformOrigin() {
+        return "left top";
+    }
 }
 
