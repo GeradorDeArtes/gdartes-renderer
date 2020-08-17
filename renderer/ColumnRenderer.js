@@ -95,10 +95,6 @@ class ColumnRenderer {
 
                 let elementAlreadyInFrame = Util.getElementInFrameByComponentId(componentClone.id);
                 
-                if(columnComponent.inbetween_margin < 0) {
-                    textRenderer.setNegativeMargin(columnComponent.inbetween_margin);
-                }
-
                 let text = textRenderer.render(componentClone, value, elementAlreadyInFrame);
 
                 text.attr('component-id', componentClone.id)

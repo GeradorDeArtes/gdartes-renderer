@@ -19,8 +19,7 @@ class TextRenderer {
             position: 'absolute',
             transform: this.getTransform(component.rotation ?? 0),
             transformOrigin: this.getTransformOrigin(),
-            marginBottom: this.negativeMargin,
-            marginTop: this.negativeMargin,
+            marginBottom: component.margin_bottom,
         })
 
         let text = elementAlreadyInFrame ? elementAlreadyInFrame.find('div') : $('<div>');
@@ -90,10 +89,6 @@ class TextRenderer {
         }
         
         return container;
-    }
-
-    setNegativeMargin(negativeMargin) {
-        this.negativeMargin = negativeMargin;
     }
 
     getAlignItemsByVerticalAlignment(verticalAlignment) {
