@@ -17,7 +17,7 @@ class TextRenderer {
             alignItems: this.getAlignItemsByVerticalAlignment(component.vertical_alignment),
             direction: this.getDirectionFromHorizontalAlignment(component.horizontal_alignment),
             position: 'absolute',
-            transform: this.getTransform(component.rotation ?? 0),
+            transform: this.getTransform(component.rotation ? component.rotation : 0),
             transformOrigin: this.getTransformOrigin(),
             marginBottom: component.margin_bottom,
         })
