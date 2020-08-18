@@ -98,7 +98,7 @@ class ColumnRenderer {
                 let text = textRenderer.render(componentClone, value, elementAlreadyInFrame);
 
                 text.attr('component-id', componentClone.id)
-                text.css('z-index', 100 - index);
+                text.css('z-index', 100 + index);
                 text.css('position', 'relative');
 
                 if(shrink == 0) {
