@@ -6,7 +6,6 @@ class ImageRenderer {
     render(component, value, elementAlreadyInFrame = null) {
         let img = elementAlreadyInFrame ? elementAlreadyInFrame : $('<img>');
     
-        img.attr('src', this.getSrcAttribute(value));
         img.width(component.size.width);
         img.height(component.size.height);
         img.addClass('image');
@@ -17,6 +16,11 @@ class ImageRenderer {
             top: this.getTop(component),
             position: "absolute"
         });
+    
+        if (component.onload !== undefined) {
+            img.on('load', component.onload);
+        }
+        img.attr('src', this.getSrcAttribute(value));
     
         return img;
     }
