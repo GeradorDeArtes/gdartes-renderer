@@ -8,7 +8,7 @@ class TextRenderer {
         container.addClass('csjs-scale-container');
         
         container.css({
-            width: component.size.width,
+            width: this.getWidth(component),
             height: this.getHeight(component),
             left: this.getLeft(component),
             top: this.getTop(component),
@@ -20,6 +20,7 @@ class TextRenderer {
             transform: this.getTransform(component.rotation ?? 0),
             transformOrigin: this.getTransformOrigin(),
             marginBottom: component.margin_bottom,
+            marginRight: component.margin_right
         })
 
         let text = elementAlreadyInFrame ? elementAlreadyInFrame.find('div') : $('<div>');
@@ -146,6 +147,10 @@ class TextRenderer {
        return component.size.height;
     }
 
+    getWidth(component) {
+        return component.size.width;
+     }
+
     generateTextBorder(thickness, color) {
         let pairHashes = {};
         let pairs = [];
@@ -171,7 +176,6 @@ class TextRenderer {
     }
 
     getTransform(rotation) {
-        console.log(rotation);
         return "rotate(" + rotation + "deg)";
     }
 
