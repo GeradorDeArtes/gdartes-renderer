@@ -51,6 +51,16 @@ class MainRenderer {
                 row.attr('component-id', component.id);
                 row.css('z-index', 100 - index);
                 this.frame.append(row);
+
+                component.document_position = {};
+                let offset = row.offset();
+                let frameOffset = $('#frame').offset();
+                component.document_position.x = offset.left - frameOffset.left;
+                component.document_position.y = offset.top - frameOffset.top;
+
+                component.document_size = {};
+                component.document_size.width = row.width();
+                component.document_size.height = row.height();
             }
         });
         

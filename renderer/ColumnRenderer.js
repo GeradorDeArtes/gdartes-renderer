@@ -52,6 +52,7 @@ class ColumnRenderer {
     populateComponents(columnElement, columnComponent, state, shrink = 0) {
         let imageRenderer = new ImageRenderer();
         let textRenderer = new TextRenderer();
+        let rowRenderer = new RowRenderer();
 
         columnComponent.components.forEach(async (component, index) => {
             component.size.width = Math.min(columnElement.width(), component.size.width);
@@ -116,6 +117,28 @@ class ColumnRenderer {
                     component.document_size.width = text.width();
                     component.document_size.height = text.height();
                 })
+            } else if (component.type === 'row') {
+
+                let row = rowRenderer.render(component, state);
+                row.attr('component-id', component.id);
+                row.css('z-index', 100 - index);
+                row.css('position', 'relative');
+
+                if(shrink == 0) {
+                    columnElement.append(row);
+                }
+
+                requestAnimationFrame(() => {
+                    component.document_position = {};
+                    let rowOffset = row.offset();
+                    let frameOffset = $('#frame').offset();
+                    component.document_position.x = rowOffset.left - frameOffset.left;
+                    component.document_position.y = rowOffset.top - frameOffset.top;
+    
+                    component.document_size = {};
+                    component.document_size.width = row.width();
+                    component.document_size.height = row.height();
+                })
             }
         });
     }
@@ -170,6 +193,10 @@ class ColumnRenderer {
             flexDirection: "column",
             justifyContent: component.vertical_alignment,
             alignItems: component.horizontal_alignment,
+            marginBottom: component.margin_bottom,
+            marginRight: component.margin_right,
+            marginTop: component.margin_top,
+            marginLeft: component.margin_left,
         });
 
         return column;
@@ -182,7 +209,6 @@ class ColumnRenderer {
             width: '100%',
             'flex-shrink': 0,
             'flex-grow': 0,
-
         });
         return margin;
     }

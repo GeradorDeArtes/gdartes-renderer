@@ -3,29 +3,34 @@ class RowRenderer {
     render(component, state) {
         let row = this.buildRow(component);
         this.populateComponents(row, component, state);
-        let widthOfFixedChildren = this.getWidthOfAllChidren(component);
+
+        let widthOfFixedChildren = this.getFixedWidthOfAllChidren(component);
         this.shrinkComponentsUntilFit(row, component, widthOfFixedChildren);
+
+        window.requestAnimationFrame(() => {
+            this.shrinkFontUntilFit(row, component, widthOfFixedChildren, state, 1);
+        })
 
         return row;
     }
 
-    getWidthOfAllChidren(component) {
-        let totalHeight = 0;
+    getFixedWidthOfAllChidren(component) {
+        let totalWidth = 0;
 
         component.components.forEach((component) => {
             if(component.size.width != 0 && component.size.width != '' && component.size.width != 'auto') {
-                totalHeight += component.size.width + (component.margin_right ? component.margin_right : 0);
+                totalWidth += component.size.width + (component.margin_right ? component.margin_right : 0);
             }
         });
 
-        totalHeight += (component.components.length - 1) * component.inbetween_margin;
-        return totalHeight;
+        totalWidth += (component.components.length - 1) * component.inbetween_margin;
+        return totalWidth;
     }
 
     /*
         Caso a width de todos os elementos seja maior que a a da row, diminui de todos os filhos pra encaixar
     */
-    shrinkComponentsUntilFit(column, component, widthOfFixedChildren) {
+    shrinkComponentsUntilFit(row, component, widthOfFixedChildren) {
         if(widthOfFixedChildren > component.size.width) {
             let scale = component.size.width / widthOfFixedChildren;
             component.components.forEach((childComponent) => {
@@ -34,12 +39,41 @@ class RowRenderer {
         }
     }
 
+    /*
+        Diminui a fonte caso componentes de texto sejam muito grandes. Em geral, isso só vai rodar se
+        os componentes tiverem width dinâmica (width == 0 || width == '')
+    */
+    shrinkFontUntilFit(row, component, heightOfFixedChildren, state, shrinkFactor) {
+        if(shrinkFactor > 20) {
+            return;
+        }
+
+        let finalWidthOfChildren = this.getWidthOfAllChidren(row);
+
+        if(finalWidthOfChildren > component.size.width) {
+            this.populateComponents(row, component, state, shrinkFactor * 5);
+            this.shrinkFontUntilFit(row, component, heightOfFixedChildren, state, shrinkFactor + 1)
+        }
+    }
+
+    getWidthOfAllChidren(row) {
+        let children = row.children();
+        let totalWidth = 0;
+
+        children.each(function(index) {
+            totalWidth += $(this).outerWidth(true);
+        });
+        
+        return totalWidth;
+    }
+
     populateComponents(columnElement, columnComponent, state, shrink = 0) {
         let imageRenderer = new ImageRenderer();
         let textRenderer = new TextRenderer();
+        let columnRenderer = new ColumnRenderer();
 
         columnComponent.components.forEach(async (component, index) => {
-            component.size.height = Math.min(columnElement.height(), component.size.height);
+            component.size.height = Math.min(columnElement.height() != 0 ? columnElement.height() : 99999, component.size.height);
             let value = this.getValueByType(component, state);
 
             // Adicionando margem
@@ -103,6 +137,29 @@ class RowRenderer {
                     component.document_size.width = text.width();
                     component.document_size.height = text.height();
                 })
+            } else if (component.type === 'column') {
+
+                let column = columnRenderer.render(component, state);
+                column.attr('component-id', component.id);
+                column.css('z-index', 100 - index);
+                column.css('position', 'relative');
+                column.css('flex-grow', '0');
+
+                if(shrink == 0) {
+                    columnElement.append(column);
+                }
+
+                requestAnimationFrame(() => {
+                    component.document_position = {};
+                    let columnOffset = column.offset();
+                    let frameOffset = $('#frame').offset();
+                    component.document_position.x = columnOffset.left - frameOffset.left;
+                    component.document_position.y = columnOffset.top - frameOffset.top;
+    
+                    component.document_size = {};
+                    component.document_size.width = column.width();
+                    component.document_size.height = column.height();
+                })
             }
         });
     }
@@ -144,12 +201,9 @@ class RowRenderer {
     }
 
     buildRow(component) {
-        let column = $('<div>');
+        let row = $('<div>');
     
-        column.width(component.size.width);
-        column.height(component.size.height);
-    
-        column.css({
+        row.css({
             left: this.getLeft(component),
             top: this.getTop(component),
             position: "absolute",
@@ -157,9 +211,22 @@ class RowRenderer {
             flexDirection: "row",
             justifyContent: component.horizontal_alignment,
             alignItems: component.vertical_alignment,
+            width: component.size.width,
+            height: this.getHeight(component),
+            marginBottom: component.margin_bottom,
+            marginRight: component.margin_right,
+            marginTop: component.margin_top,
+            marginLeft: component.margin_left,
         });
 
-        return column;
+        return row;
+    }
+
+    getHeight(component) {
+        if(component.size.height == '' || component.size.height == 0) {
+            return 'auto';
+        }
+        return component.size.height;
     }
 
     buildMargin(columnComponent) {
@@ -169,7 +236,6 @@ class RowRenderer {
             width: columnComponent.inbetween_margin,
             'flex-shrink': 0,
             'flex-grow': 0,
-
         });
         return margin;
     }

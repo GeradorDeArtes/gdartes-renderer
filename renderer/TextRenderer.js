@@ -20,7 +20,10 @@ class TextRenderer {
             transform: this.getTransform(component.rotation ?? 0),
             transformOrigin: this.getTransformOrigin(),
             marginBottom: component.margin_bottom,
-            marginRight: component.margin_right
+            marginRight: component.margin_right,
+            marginTop: component.margin_top,
+            marginLeft: component.margin_left,
+            alignSelf: component.align_self
         })
 
         let text = elementAlreadyInFrame ? elementAlreadyInFrame.find('div') : $('<div>');
@@ -148,8 +151,11 @@ class TextRenderer {
     }
 
     getWidth(component) {
+        if(component.size.width == 0 || component.size.width == '') {
+            return 'auto';
+        }
         return component.size.width;
-     }
+    }
 
     generateTextBorder(thickness, color) {
         let pairHashes = {};

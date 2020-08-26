@@ -33,10 +33,12 @@ class Csjs {
 	}
 
 	fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing) {
+		width = width == 0 ? 99999 : width;
 		this._fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, 3000);
 	}
 
 	fillNone(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size) {
+		width = width == 0 ? 99999 : width;
 		this._fillLargestFont(element, width, height, horizontal_alignment, vertical_alignment, letter_spacing, font_size);
 	}
 
