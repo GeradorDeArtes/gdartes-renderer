@@ -1,61 +1,79 @@
-class ColumnRenderer {
+class RowRenderer {
 
     render(component, state) {
-        let column = this.buildColumn(component);
-        this.populateComponents(column, component, state);
-        let heightOfFixedChildren = this.getFixedHeightOfAllChidren(component);
+        let row = this.buildRow(component);
+        this.populateComponents(row, component, state);
+
+        let widthOfFixedChildren = this.getFixedWidthOfAllChidren(component);
+        this.shrinkComponentsUntilFit(row, component, widthOfFixedChildren);
 
         window.requestAnimationFrame(() => {
-            this.shrinkFontUntilFit(column, component, heightOfFixedChildren, state, 1);
+            this.shrinkFontUntilFit(row, component, widthOfFixedChildren, state, 1);
         })
 
-        return column;
+        return row;
     }
 
-    getFixedHeightOfAllChidren(component) {
-        let totalHeight = 0;
+    getFixedWidthOfAllChidren(component) {
+        let totalWidth = 0;
 
         component.components.forEach((component) => {
-            if(component.size.height != 0 && component.size.height != '' && component.size.height != 'auto') {
-                totalHeight += component.size.height  + (component.margin_bottom ? component.margin_bottom : 0);
+            if(component.size.width != 0 && component.size.width != '' && component.size.width != 'auto') {
+                totalWidth += component.size.width + (component.margin_right ? component.margin_right : 0);
             }
         });
 
-        totalHeight += (component.components.length - 1) * component.inbetween_margin;
-        return totalHeight;
+        totalWidth += (component.components.length - 1) * component.inbetween_margin;
+        return totalWidth;
     }
 
-    shrinkFontUntilFit(column, component, heightOfFixedChildren, state, shrinkFactor) {
+    /*
+        Caso a width de todos os elementos seja maior que a a da row, diminui de todos os filhos pra encaixar
+    */
+    shrinkComponentsUntilFit(row, component, widthOfFixedChildren) {
+        if(widthOfFixedChildren > component.size.width) {
+            let scale = component.size.width / widthOfFixedChildren;
+            component.components.forEach((childComponent) => {
+                childComponent.size.width *= scale;
+            });
+        }
+    }
+
+    /*
+        Diminui a fonte caso componentes de texto sejam muito grandes. Em geral, isso só vai rodar se
+        os componentes tiverem width dinâmica (width == 0 || width == '')
+    */
+    shrinkFontUntilFit(row, component, heightOfFixedChildren, state, shrinkFactor) {
         if(shrinkFactor > 20) {
             return;
         }
 
-        let finalHeightOfChildren = this.getHeightOfAllChidren(column);
+        let finalWidthOfChildren = this.getWidthOfAllChidren(row);
 
-        if(finalHeightOfChildren > component.size.height) {
-            this.populateComponents(column, component, state, shrinkFactor * 5);
-            this.shrinkFontUntilFit(column, component, heightOfFixedChildren, state, shrinkFactor + 1)
+        if(finalWidthOfChildren > component.size.width) {
+            this.populateComponents(row, component, state, shrinkFactor * 5);
+            this.shrinkFontUntilFit(row, component, heightOfFixedChildren, state, shrinkFactor + 1)
         }
     }
 
-    getHeightOfAllChidren(column) {
-        let children = column.children();
-        let totalHeight = 0;
+    getWidthOfAllChidren(row) {
+        let children = row.children();
+        let totalWidth = 0;
 
         children.each(function(index) {
-            totalHeight += $(this).outerHeight(true);
+            totalWidth += $(this).outerWidth(true);
         });
         
-        return totalHeight;
+        return totalWidth;
     }
 
     populateComponents(columnElement, columnComponent, state, shrink = 0) {
         let imageRenderer = new ImageRenderer();
         let textRenderer = new TextRenderer();
-        let rowRenderer = new RowRenderer();
+        let columnRenderer = new ColumnRenderer();
 
         columnComponent.components.forEach(async (component, index) => {
-            component.size.width = Math.min(columnElement.width(), component.size.width);
+            component.size.height = Math.min(columnElement.height() != 0 ? columnElement.height() : 99999, component.size.height);
             let value = this.getValueByType(component, state);
 
             // Adicionando margem
@@ -71,6 +89,7 @@ class ColumnRenderer {
                 img.attr('component-id', component.id)
                 img.css('z-index', 100 - index);
                 img.css('position', 'relative');
+                img.css('flex-grow', '0');
 
                 if(shrink == 0) {
                     columnElement.append(img);
@@ -101,6 +120,7 @@ class ColumnRenderer {
                 text.attr('component-id', componentClone.id)
                 text.css('z-index', 100 + index);
                 text.css('position', 'relative');
+                text.css('flex-grow', '0');
 
                 if(shrink == 0) {
                     columnElement.append(text);
@@ -117,27 +137,28 @@ class ColumnRenderer {
                     component.document_size.width = text.width();
                     component.document_size.height = text.height();
                 })
-            } else if (component.type === 'row') {
+            } else if (component.type === 'column') {
 
-                let row = rowRenderer.render(component, state);
-                row.attr('component-id', component.id);
-                row.css('z-index', 100 - index);
-                row.css('position', 'relative');
+                let column = columnRenderer.render(component, state);
+                column.attr('component-id', component.id);
+                column.css('z-index', 100 - index);
+                column.css('position', 'relative');
+                column.css('flex-grow', '0');
 
                 if(shrink == 0) {
-                    columnElement.append(row);
+                    columnElement.append(column);
                 }
 
                 requestAnimationFrame(() => {
                     component.document_position = {};
-                    let rowOffset = row.offset();
+                    let columnOffset = column.offset();
                     let frameOffset = $('#frame').offset();
-                    component.document_position.x = rowOffset.left - frameOffset.left;
-                    component.document_position.y = rowOffset.top - frameOffset.top;
+                    component.document_position.x = columnOffset.left - frameOffset.left;
+                    component.document_position.y = columnOffset.top - frameOffset.top;
     
                     component.document_size = {};
-                    component.document_size.width = row.width();
-                    component.document_size.height = row.height();
+                    component.document_size.width = column.width();
+                    component.document_size.height = column.height();
                 })
             }
         });
@@ -179,34 +200,40 @@ class ColumnRenderer {
         }
     }
 
-    buildColumn(component) {
-        let column = $('<div>');
+    buildRow(component) {
+        let row = $('<div>');
     
-        column.width(component.size.width);
-        column.height(component.size.height);
-    
-        column.css({
+        row.css({
             left: this.getLeft(component),
             top: this.getTop(component),
             position: "absolute",
             display: "flex",
-            flexDirection: "column",
-            justifyContent: component.vertical_alignment,
-            alignItems: component.horizontal_alignment,
+            flexDirection: "row",
+            justifyContent: component.horizontal_alignment,
+            alignItems: component.vertical_alignment,
+            width: component.size.width,
+            height: this.getHeight(component),
             marginBottom: component.margin_bottom,
             marginRight: component.margin_right,
             marginTop: component.margin_top,
             marginLeft: component.margin_left,
         });
 
-        return column;
+        return row;
+    }
+
+    getHeight(component) {
+        if(component.size.height == '' || component.size.height == 0) {
+            return 'auto';
+        }
+        return component.size.height;
     }
 
     buildMargin(columnComponent) {
         let margin = $('<div>');
         margin.css({
-            height: columnComponent.inbetween_margin,
-            width: '100%',
+            height: '100%',
+            width: columnComponent.inbetween_margin,
             'flex-shrink': 0,
             'flex-grow': 0,
         });

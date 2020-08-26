@@ -14,7 +14,11 @@ class ImageRenderer {
             objectFit: component.fit,
             left: this.getLeft(component),
             top: this.getTop(component),
-            position: "absolute"
+            position: "absolute",
+            marginBottom: component.margin_bottom,
+            marginRight: component.margin_right,
+            marginTop: component.margin_top,
+            marginLeft: component.margin_left,
         });
     
         if (component.onload !== undefined) {

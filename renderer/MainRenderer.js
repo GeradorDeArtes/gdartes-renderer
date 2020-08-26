@@ -27,6 +27,7 @@ class MainRenderer {
         let imageRenderer = new ImageRenderer();
         let textRenderer = new TextRenderer();
         let columnRenderer = new ColumnRenderer();
+        let rowRenderer = new RowRenderer();
 
         template.components.forEach(async (component, index) => {
             let value = this.getValueByType(component, state);
@@ -45,6 +46,21 @@ class MainRenderer {
                 column.attr('component-id', component.id);
                 column.css('z-index', 100 - index);
                 this.frame.append(column);
+            } else if (component.type === 'row') {
+                let row = rowRenderer.render(component, state);
+                row.attr('component-id', component.id);
+                row.css('z-index', 100 - index);
+                this.frame.append(row);
+
+                component.document_position = {};
+                let offset = row.offset();
+                let frameOffset = $('#frame').offset();
+                component.document_position.x = offset.left - frameOffset.left;
+                component.document_position.y = offset.top - frameOffset.top;
+
+                component.document_size = {};
+                component.document_size.width = row.width();
+                component.document_size.height = row.height();
             }
         });
         
