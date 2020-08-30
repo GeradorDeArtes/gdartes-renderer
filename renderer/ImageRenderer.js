@@ -24,14 +24,18 @@ class ImageRenderer {
         if (component.onload !== undefined) {
             img.on('load', component.onload);
         }
-        img.attr('src', this.getSrcAttribute(value));
+        var src = this.getSrcAttribute(value);
+        if(src == null || src.trim() == '') {
+            component.onload.call(img);
+        }
+        img.attr('src', src);
     
         return img;
     }
 
     getSrcAttribute(src) {
         if(src == null) {
-            return;
+            return null;
         }
         return src.split(/:(.+)/)[1];
     }
