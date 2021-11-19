@@ -6,7 +6,11 @@ class TextRenderer {
     render(component, value, elementAlreadyInFrame = null) {
         let container = elementAlreadyInFrame ? elementAlreadyInFrame : $('<div>');
         container.addClass('csjs-scale-container');
-        
+        /* added this so that justify could be used */
+        let textHorizontalAlignment = component.horizontal_alignment;
+        if(component.horizontal_alignment == 'justify')
+            component.horizontal_alignment = 'center';
+        /*                                           */ 
         container.css({
             width: this.getWidth(component),
             height: this.getHeight(component),
@@ -30,12 +34,12 @@ class TextRenderer {
         
         text.addClass('text');
         text.addClass('csjs-scale-content');
-    
+        /* component.horizontal_alignment was used instead of textHorizontalAlignment */
         text.css({
             fontSize: component.font_size,
             fontWeight: component.weight,
             lineHeight: component.line_height,
-            textAlign: component.horizontal_alignment,
+            textAlign: textHorizontalAlignment,
             position: 'relative',
             direction: 'ltr'
         });
