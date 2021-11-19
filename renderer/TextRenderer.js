@@ -96,6 +96,7 @@ class TextRenderer {
 
         }
         
+        component.horizontal_alignment = textHorizontalAlignment;
         return container;
     }
 
