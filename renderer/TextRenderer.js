@@ -9,7 +9,7 @@ class TextRenderer {
         /* added this so that justify could be used */
         let textHorizontalAlignment = component.horizontal_alignment;
         if(component.horizontal_alignment == 'justify')
-            component.horizontal_alignment = 'center';
+            component.horizontal_alignment = 'left';
         /*                                           */ 
         container.css({
             width: this.getWidth(component),
