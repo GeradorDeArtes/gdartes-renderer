@@ -9,8 +9,8 @@ class TextRenderer {
         /* added this so that justify could be used */
         let textHorizontalAlignment = component.horizontal_alignment;
         if(component.horizontal_alignment == 'justify')
-            component.horizontal_alignment = 'left';
-        /*                                           */ 
+          component.horizontal_alignment = 'left';
+        /*                                          */
         container.css({
             width: this.getWidth(component),
             height: this.getHeight(component),
@@ -31,7 +31,7 @@ class TextRenderer {
         })
 
         let text = elementAlreadyInFrame ? elementAlreadyInFrame.find('div') : $('<div>');
-        
+
         text.addClass('text');
         text.addClass('csjs-scale-content');
         /* component.horizontal_alignment was used instead of textHorizontalAlignment */
@@ -57,11 +57,12 @@ class TextRenderer {
             fontFamily: component.font_family,
             color: component.color,
         });
-
+        //            ###          ###
+        //rgba(0,0,0, 0.7) 1px 1px 20px
         if (component.text_border !== undefined && component.text_border.thickness != 0) {
             p.css({
-                textShadow: this.generateTextBorder(component.text_border.thickness, component.text_border.color),
-            }); 
+                textShadow: this.generateTextBorder(component.text_border.thickness, component.text_border.strength, component.text_border.color),
+            });
         }
 
         text.append(p);
@@ -81,7 +82,7 @@ class TextRenderer {
 
                 break;
             case "largest":
-                let fillLargestFont = () => csjs.fillLargestFont(text, component.size.width, component.size.height, component.horizontal_alignment, 
+                let fillLargestFont = () => csjs.fillLargestFont(text, component.size.width, component.size.height, component.horizontal_alignment,
                     component.vertical_alignment, component.letter_spacing);
 
                 if(elementAlreadyInFrame && elementAlreadyInFrame.length != 0) {
@@ -95,7 +96,7 @@ class TextRenderer {
                 throw "Fill " + component.fill + " não existe";
 
         }
-        
+
         component.horizontal_alignment = textHorizontalAlignment;
         return container;
     }
@@ -162,7 +163,11 @@ class TextRenderer {
         return component.size.width;
     }
 
-    generateTextBorder(thickness, color) {
+    generateTextBorder(thickness, strength, color) {
+      let textShadow = `${this.hexToRgb(color, strength)} 1px 1px ${thickness}px`;
+      console.log(textShadow);
+      return textShadow;
+      /*
         let pairHashes = {};
         let pairs = [];
         for (let x = -thickness; x <= thickness; x += 0.125) {
@@ -184,7 +189,18 @@ class TextRenderer {
         }
 
         return shadows.join(', ');
+        */
     }
+
+    hexToRgb(hex, str) {
+      var bigint = parseInt(hex, 16);
+      var r = (bigint >> 16) & 255;
+      var g = (bigint >> 8) & 255;
+      var b = bigint & 255;
+
+      return `rgb(${r} ${g} ${b} / ${str}%)`;
+  }
+
 
     getTransform(rotation) {
         return "rotate(" + rotation + "deg)";
