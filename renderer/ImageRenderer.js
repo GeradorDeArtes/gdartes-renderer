@@ -5,11 +5,11 @@ class ImageRenderer {
     */
     render(component, value, elementAlreadyInFrame = null) {
         let img = elementAlreadyInFrame ? elementAlreadyInFrame : $('<img>');
-    
+
         img.width(component.size.width);
         img.height(component.size.height);
         img.addClass('image');
-    
+
         img.css({
             objectFit: component.fit,
             left: this.getLeft(component),
@@ -20,16 +20,17 @@ class ImageRenderer {
             marginTop: component.margin_top,
             marginLeft: component.margin_left,
         });
-    
+
         if (component.onload !== undefined) {
             img.on('load', component.onload);
         }
+
         var src = this.getSrcAttribute(value);
         if(src == null || src.trim() == '') {
             component.onload.call(img);
         }
         img.attr('src', src);
-    
+
         return img;
     }
 
